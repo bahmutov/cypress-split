@@ -36,9 +36,9 @@ function cypressSplit(on, config) {
     config = on
   }
 
-  if (config.specs) {
+  if (config.spec) {
     debug('config has specs set')
-    debug(config.specs)
+    debug(config.spec)
   }
 
   // the user can specify the split flag / numbers
@@ -49,6 +49,21 @@ function cypressSplit(on, config) {
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
+  // potentially a list of files to run / split
+  let SPEC = process.env.SPEC || config.env.spec || config.env.SPEC
+  let specs
+  if (typeof SPEC === 'string' && SPEC) {
+    specs = SPEC.split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+    console.log(
+      '%s have explicit %d spec %s',
+      label,
+      specs.length,
+      specs.length === 1 ? 'file' : 'files',
+    )
+  }
+
   if (SPLIT === 'true' || SPLIT === true) {
     // the user wants us to determine the machine index
     // and the total number of machines, which is possible for some CI systems
@@ -80,7 +95,10 @@ function cypressSplit(on, config) {
   }
 
   if (isDefined(SPLIT) && isDefined(SPLIT_INDEX)) {
-    const specs = getSpecs(config)
+    if (!specs) {
+      specs = getSpecs(config)
+    }
+
     console.log('%s there are %d found specs', label, specs.length)
     // console.log(specs)
     const splitN = Number(SPLIT)
