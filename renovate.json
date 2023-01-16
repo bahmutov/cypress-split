@@ -1,0 +1,15 @@
+{
+  "extends": ["config:base"],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  },
+  "minor": {
+    "automerge": true
+  },
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 2,
+  "schedule": ["after 10pm and before 5am on every weekday", "every weekend"],
+  "masterIssue": true,
+  "labels": ["type: dependencies", "renovate"]
+}
