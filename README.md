@@ -88,6 +88,8 @@ steps:
       SPLIT_INDEX: ${{ strategy.job-index }}
 ```
 
+![Cypress split on GitHub Actions](./images/split.png)
+
 Note that we need to pass the `SPLIT` and `SPLIT_INDEX` numbers from the `strategy` context to the plugin to grab. See the full example in [bahmutov/cypress-split-example](https://github.com/bahmutov/cypress-split-example)
 
 ### Other CIs
