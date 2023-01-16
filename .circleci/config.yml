@@ -1,0 +1,22 @@
+# to use orbs, must use version >= 2.1
+version: 2.1
+orbs:
+  # import Cypress orb by specifying an exact version x.y.z
+  # or the latest version 1.x.x using "@1" syntax
+  # https://github.com/cypress-io/circleci-orb
+  cypress: cypress-io/cypress@2
+workflows:
+  build:
+    jobs:
+      # "cypress" is the name of the imported orb
+      # "run" is the name of the job defined in Cypress orb
+      - cypress/run:
+          executor: cypress/base-16-14-2-slim
+          # run N identical job containers
+          parallelism: 3
+          # built-in CircleCI environment variables
+          # https://circleci.com/docs/variables/#built-in-environment-variables
+          build: npx @bahmutov/print-env CIRCLE
+          command: npx cypress run --env split=true
+          # no further jobs, thus no need to save the files
+          no-workspace: true
