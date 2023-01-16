@@ -20,6 +20,25 @@ jobs:
       - name: Print result 🖨
         run: echo '${{ steps.prepare.outputs.matrix }}'
 
+  # two jobs that split 2 explicit specs
+  test-spec:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2]
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+      - name: Run split Cypress tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        # using operating system process environment variables
+        env:
+          SPEC: 'cypress/e2e/spec-b.cy.js,cypress/e2e/spec-e.cy.js'
+          SPLIT: ${{ strategy.job-total }}
+          SPLIT_INDEX: ${{ strategy.job-index }}
+
   test-split:
     needs: prepare
     runs-on: ubuntu-20.04
@@ -39,13 +58,14 @@ jobs:
       - name: Run split Cypress tests 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
+        # using operating system process environment variables
         env:
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
 
   release:
     if: github.ref == 'refs/heads/main'
-    needs: test-split
+    needs: [test-split, test-spec]
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout 🛎
