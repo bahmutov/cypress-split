@@ -1,6 +1,6 @@
 {
   "name": "cypress-split",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Split Cypress specs across parallel CI machines for speed",
   "main": "src/index.js",
   "files": [
@@ -8,11 +8,12 @@
   ],
   "scripts": {
     "test": "cypress run",
-    "badges": "npx -p dependency-version-badge update-badge cypress"
+    "badges": "npx -p dependency-version-badge update-badge cypress",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bahmutov/cypress-split.git"
+    "url": "https://github.com/bahmutov/cypress-split.git"
   },
   "keywords": [
     "cypress-plugin",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "cypress": "^12.3.0",
-    "prettier": "^2.8.3"
+    "prettier": "^2.8.3",
+    "semantic-release": "^20.0.2"
   }
 }
