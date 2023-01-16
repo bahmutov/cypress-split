@@ -35,6 +35,6 @@
   "devDependencies": {
     "cypress": "^12.3.0",
     "prettier": "^2.8.3",
-    "semantic-release": "^19"
+    "semantic-release": "^20.0.2"
   }
 }
