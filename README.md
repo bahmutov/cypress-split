@@ -2,3 +2,7 @@
 
 > Split Cypress specs across parallel CI machines for speed
 > without using any external services
+
+## Debugging
+
+To see diagnostic log messages from this plugin, set the environment variable `DEBUG=cypress-split`

@@ -1,8 +1,11 @@
+const debug = require('debug')('cypress-split')
 const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const cTable = require('console.table')
 
 function getChunk(values, totalChunks, chunkIndex) {
+  debug('get chunk %o', { values, totalChunks, chunkIndex })
+
   // split all items into N chunks and take just a single chunk
   if (totalChunks < 0) {
     throw new Error('totalChunks must be >= 0')
@@ -29,18 +32,20 @@ function cypressSplit(on, config) {
   // maybe the user called this function with a single argument
   // then we assume it is the config object
   if (arguments.length === 1) {
+    debug('single argument, assuming it is the config object')
     config = on
   }
 
   if (config.specs) {
-    console.log(config.specs)
+    debug('config has specs set')
+    debug(config.specs)
   }
 
   // the user can specify the split flag / numbers
   // using either OS process environment variables
   // or Cypress env variables
-  console.log('Cypress config env')
-  console.log(config.env)
+  debug('Cypress config env')
+  debug(config.env)
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
@@ -111,6 +116,8 @@ function cypressSplit(on, config) {
         .write()
     }
 
+    debug('setting the spec pattern to')
+    debug(splitSpecs)
     config.specPattern = splitSpecs
     return config
   }
