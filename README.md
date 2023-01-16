@@ -126,6 +126,29 @@ setupNodeEvents(on, config) {
 }
 ```
 
+## List of specs
+
+Suppose you want to run some specs first, for example [just the changed specs](https://glebbahmutov.com/blog/trace-changed-specs/). You would compute the list of specs and then call Cypress `run` command with the `--spec` parameter
+
+```
+$ npx cypress run --spec "spec1,spec2,spec3"
+```
+
+You can still split the specs across several machines using `cypress-split`, just move the `--spec` list (or duplicate it) to a process or Cypress env variable `spec`:
+
+```
+# using process environment variables split all specs across 2 machines
+$ SPEC="spec1,spec2,spec3",SPLIT=2,SPLIT_INDEX=0 npx cypress run --spec "spec1,spec2,spec3"
+$ SPEC="spec1,spec2,spec3",SPLIT=2,SPLIT_INDEX=1 npx cypress run --spec "spec1,spec2,spec3"
+
+# using Cypress "env" option
+$ npx cypress run --env split=2,splitIndex=0,spec="spec1,spec2,spec3"
+$ npx cypress run --env split=2,splitIndex=1,spec="spec1,spec2,spec3"
+
+# for CIs with automatically index detection
+$ npx cypress run --env split=true,spec="spec1,spec2,spec3"
+```
+
 ## Debugging
 
 To see diagnostic log messages from this plugin, set the environment variable `DEBUG=cypress-split`
