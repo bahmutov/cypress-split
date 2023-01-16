@@ -1,0 +1,60 @@
+name: ci
+on: push
+jobs:
+  # example splitting all tests across GitHub machines
+  prepare:
+    runs-on: ubuntu-20.04
+    # explicitly set the output of this job
+    # so that other jobs can use it
+    outputs:
+      matrix: ${{ steps.prepare.outputs.matrix }}
+    steps:
+      # generate the list using a bash script
+      - name: Create matrix ⊹
+        id: prepare
+        # for reusable workflow, must use the full action reference
+        uses: bahmutov/gh-build-matrix@main
+        with:
+          n: 3 # number of containers to output
+
+      - name: Print result 🖨
+        run: echo '${{ steps.prepare.outputs.matrix }}'
+
+  test-split:
+    needs: prepare
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      - name: Print GitHub variables 🖨
+        run: npx @bahmutov/print-env GITHUB
+
+      - name: Print GitHub strategy context 🖨
+        run: echo '${{ toJSON(strategy) }}'
+
+      - name: Run split Cypress tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        env:
+          SPLIT: ${{ strategy.job-total }}
+          SPLIT_INDEX: ${{ strategy.job-index }}
+
+  release:
+    if: github.ref == 'refs/heads/main'
+    needs: test-split
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      - name: Semantic Release 🚀
+        uses: cycjimmy/semantic-release-action@v3
+        with:
+          branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

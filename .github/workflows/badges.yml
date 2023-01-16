@@ -1,0 +1,25 @@
+name: badges
+on:
+  schedule:
+    # update badges every night
+    # because we have a few badges that are linked
+    # to the external repositories
+    - cron: '0 3 * * *'
+
+jobs:
+  badges:
+    name: Badges
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      - name: Update version badges 🏷
+        run: npm run badges
+
+      - name: Commit any changed files 💾
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Updated badges
+          branch: main
+          file_pattern: README.md
