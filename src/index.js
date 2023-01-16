@@ -104,7 +104,10 @@ function cypressSplit(on, config) {
           ],
           ...specRows,
         ])
-        .addLink('cypress-split', 'https://cypress.tips')
+        .addLink(
+          'bahmutov/cypress-split',
+          'https://github.com/bahmutov/cypress-split',
+        )
         .write()
     }
 
