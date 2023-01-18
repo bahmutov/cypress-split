@@ -5,6 +5,7 @@ const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const cTable = require('console.table')
 const { getChunk } = require('./chunk')
+const path = require('path')
 
 const label = 'cypress-split:'
 
@@ -119,9 +120,15 @@ function cypressSplit(on, config) {
         .write()
     }
 
-    debug('setting the spec pattern to')
-    debug(splitSpecs)
-    config.specPattern = splitSpecs
+    if (splitSpecs.length) {
+      debug('setting the spec pattern to')
+      debug(splitSpecs)
+      config.specPattern = splitSpecs
+    } else {
+      console.log('%s no specs to run, running an empty spec file', label)
+      config.specPattern = path.resolve(__dirname, './empty-spec.cy.js')
+    }
+
     return config
   }
 }

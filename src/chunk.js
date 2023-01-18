@@ -32,6 +32,11 @@ function chunkify(a, n, balanced) {
   return out
 }
 
+/**
+ * Splits the given array across N "buckets"
+ * and returns the bucket with the index k.
+ * Note: a bucket can be empty!
+ */
 function getChunk(values, totalChunks, chunkIndex) {
   // split all items into N chunks and take just a single chunk
   if (totalChunks < 0) {
@@ -45,7 +50,7 @@ function getChunk(values, totalChunks, chunkIndex) {
   }
 
   const chunks = chunkify(values, totalChunks, true)
-  return chunks[chunkIndex]
+  return chunks[chunkIndex] || []
 }
 
 module.exports = { getChunk, chunkify }

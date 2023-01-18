@@ -9,7 +9,8 @@
   "scripts": {
     "test": "cypress run",
     "badges": "npx -p dependency-version-badge update-badge cypress",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "empty": "DEBUG=cypress-split SPLIT=10 SPLIT_INDEX=9 cypress run"
   },
   "repository": {
     "type": "git",

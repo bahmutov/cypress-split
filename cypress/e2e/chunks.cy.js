@@ -29,8 +29,9 @@ describe('getChunk', () => {
     const specs = [1]
     let chunk = getChunk(specs, 2, 0)
     expect(chunk, 'chunk 0').to.deep.equal([1])
+    // nothing to do in the second machine
     chunk = getChunk(specs, 2, 1)
-    expect(chunk, 'chunk 1').to.deep.equal(undefined)
+    expect(chunk, 'chunk 1').to.deep.equal([])
   })
 })
 
