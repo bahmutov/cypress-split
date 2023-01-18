@@ -2,27 +2,7 @@ const debug = require('debug')('cypress-split')
 const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const cTable = require('console.table')
-
-function getChunk(values, totalChunks, chunkIndex) {
-  debug('get chunk %o', { values, totalChunks, chunkIndex })
-
-  // split all items into N chunks and take just a single chunk
-  if (totalChunks < 0) {
-    throw new Error('totalChunks must be >= 0')
-  }
-
-  if (chunkIndex < 0 || chunkIndex >= totalChunks) {
-    throw new Error(
-      `Invalid chunk index ${chunkIndex} vs all chunks ${totalChunks}`,
-    )
-  }
-
-  const chunkSize = Math.ceil(values.length / totalChunks)
-  const chunkStart = chunkIndex * chunkSize
-  const chunkEnd = chunkStart + chunkSize
-  const chunk = values.slice(chunkStart, chunkEnd)
-  return chunk
-}
+const { getChunk } = require('./chunk')
 
 const label = 'cypress-split:'
 
@@ -104,6 +84,8 @@ function cypressSplit(on, config) {
     const splitN = Number(SPLIT)
     const splitIndex = Number(SPLIT_INDEX)
     console.log('%s split %d of %d', label, splitIndex, splitN)
+
+    debug('get chunk %o', { values, totalChunks, chunkIndex })
     const splitSpecs = getChunk(specs, splitN, splitIndex)
 
     const specRows = splitSpecs.map((specName, k) => {
