@@ -63,9 +63,20 @@ jobs:
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
 
+  test-empty:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+      - name: Run an empty Cypress split 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run empty
+
   release:
     if: github.ref == 'refs/heads/main'
-    needs: [test-split, test-spec]
+    needs: [test-empty, test-split, test-spec]
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout 🛎
