@@ -1,3 +1,5 @@
+// @ts-check
+
 // https://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
 function chunkify(a, n, balanced) {
   if (n < 2) return [a]

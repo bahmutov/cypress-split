@@ -1,3 +1,5 @@
+// @ts-check
+
 const debug = require('debug')('cypress-split')
 const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
@@ -76,6 +78,7 @@ function cypressSplit(on, config) {
 
   if (isDefined(SPLIT) && isDefined(SPLIT_INDEX)) {
     if (!specs) {
+      // @ts-ignore
       specs = getSpecs(config)
     }
 
@@ -85,7 +88,7 @@ function cypressSplit(on, config) {
     const splitIndex = Number(SPLIT_INDEX)
     console.log('%s split %d of %d', label, splitIndex, splitN)
 
-    debug('get chunk %o', { values, totalChunks, chunkIndex })
+    debug('get chunk %o', { specs, splitN, splitIndex })
     const splitSpecs = getChunk(specs, splitN, splitIndex)
 
     const specRows = splitSpecs.map((specName, k) => {
