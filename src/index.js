@@ -125,7 +125,15 @@ function cypressSplit(on, config) {
     if (splitSpecs.length) {
       debug('setting the spec pattern to')
       debug(splitSpecs)
-      config.specPattern = splitSpecs
+      if (config.integrationFolder) {
+        debug('setting test files')
+        config.testFiles = splitSpecs.map((name) =>
+          path.relative(config.integrationFolder, name),
+        )
+      } else {
+        // Cypress v10+
+        config.specPattern = splitSpecs
+      }
     } else {
       // copy the empty spec file from our source folder into temp folder
       const tempFilename = path.join(
