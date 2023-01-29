@@ -37,6 +37,7 @@ function cypressSplit(on, config) {
   const specResults = {}
   on('after:spec', (spec, results) => {
     // console.log(results, results)
+    debug('after:spec for %s %o', spec.relative, results.stats)
     specResults[spec.relative] = results
   })
 
@@ -117,31 +118,35 @@ function cypressSplit(on, config) {
     console.log(cTable.getTable(['k', 'spec'], specRows))
 
     if (process.env.GITHUB_ACTIONS) {
-      // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
-
-      ghCore.summary
-        .addHeading(
-          `${label} chunk ${splitIndex + 1} of ${splitN} (${
-            splitSpecs.length
-          } ${splitSpecs.length === 1 ? 'spec' : 'specs'})`,
-        )
-        .addTable([
-          [
-            { data: 'K', header: true },
-            { data: 'Spec', header: true },
-            { data: 'Passed ✅', header: true },
-            { data: 'Failed ❌', header: true },
-            { data: 'Pending ✋', header: true },
-            { data: 'Skipped ↩️', header: true },
-            { data: 'Duration 🕗', header: true },
-          ],
-          ...specRows,
-        ])
-        .addLink(
-          'bahmutov/cypress-split',
-          'https://github.com/bahmutov/cypress-split',
-        )
-        .write()
+      // only output the GitHub summary table AFTER the run
+      // because GH does not show the summary before the job finishes
+      // so we might as well wait for all spec results to come in
+      on('after:run', () => {
+        // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
+        ghCore.summary
+          .addHeading(
+            `${label} chunk ${splitIndex + 1} of ${splitN} (${
+              splitSpecs.length
+            } ${splitSpecs.length === 1 ? 'spec' : 'specs'})`,
+          )
+          .addTable([
+            [
+              { data: 'K', header: true },
+              { data: 'Spec', header: true },
+              { data: 'Passed ✅', header: true },
+              { data: 'Failed ❌', header: true },
+              { data: 'Pending ✋', header: true },
+              { data: 'Skipped ↩️', header: true },
+              { data: 'Duration 🕗', header: true },
+            ],
+            ...specRows,
+          ])
+          .addLink(
+            'bahmutov/cypress-split',
+            'https://github.com/bahmutov/cypress-split',
+          )
+          .write()
+      })
     }
 
     if (splitSpecs.length) {
