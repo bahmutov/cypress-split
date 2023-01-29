@@ -116,7 +116,7 @@ function cypressSplit(on, config) {
         if (specResult) {
           console.log('spec results for %s', specName)
           console.log(specResult.stats)
-          specRow.push(specResult.stats.passes)
+          specRow.push(String(specResult.stats.passes))
           specRow.push(specResult.stats.failures)
           specRow.push(specResult.stats.pending)
           specRow.push(specResult.stats.skipped)
