@@ -8,6 +8,7 @@ const { getChunk } = require('./chunk')
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
+const humanizeDuration = require('humanize-duration')
 
 const label = 'cypress-split:'
 
@@ -31,6 +32,13 @@ function cypressSplit(on, config) {
   // or Cypress env variables
   debug('Cypress config env')
   debug(config.env)
+
+  // collect the test results to generate a better report
+  const specResults = {}
+  on('after:spec', (spec, results) => {
+    // console.log(results, results)
+    specResults[spec.relative] = results
+  })
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
@@ -95,7 +103,16 @@ function cypressSplit(on, config) {
     const splitSpecs = getChunk(specs, splitN, splitIndex)
 
     const specRows = splitSpecs.map((specName, k) => {
-      return [String(k + 1), specName]
+      const specResult = specResults[specName]
+      const specRow = [String(k + 1), specName]
+      if (specResult) {
+        specRow.push(specResult.stats.passes)
+        specRow.push(specResult.stats.failures)
+        specRow.push(specResult.stats.pending)
+        specRow.push(specResult.stats.skipped)
+        specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
+      }
+      return specRow
     })
     console.log(cTable.getTable(['k', 'spec'], specRows))
 
@@ -110,8 +127,13 @@ function cypressSplit(on, config) {
         )
         .addTable([
           [
-            { data: 'k', header: true },
-            { data: 'spec', header: true },
+            { data: 'K', header: true },
+            { data: 'Spec', header: true },
+            { data: 'Passed ✅', header: true },
+            { data: 'Failed ❌', header: true },
+            { data: 'Pending ✋', header: true },
+            { data: 'Skipped ↩️', header: true },
+            { data: 'Duration 🕗', header: true },
           ],
           ...specRows,
         ])
