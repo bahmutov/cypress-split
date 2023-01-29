@@ -3,6 +3,8 @@
 > Split Cypress specs across parallel CI machines for speed
 > without using any external services
 
+![Detailed plugin output on GitHub Actions](./images/details.png)
+
 ## Install
 
 Add this plugin as a dev dependency and include in your Cypress config file.
