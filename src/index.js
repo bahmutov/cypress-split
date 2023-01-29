@@ -114,12 +114,13 @@ function cypressSplit(on, config) {
         const specName = specRow[1]
         const specResult = specResults[specName]
         if (specResult) {
-          console.log('spec results for %s', specName)
-          console.log(specResult.stats)
+          debug('spec results for %s', specName)
+          debug(specResult.stats)
+          // have to convert numbers to strings
           specRow.push(String(specResult.stats.passes))
-          specRow.push(specResult.stats.failures)
-          specRow.push(specResult.stats.pending)
-          specRow.push(specResult.stats.skipped)
+          specRow.push(String(specResult.stats.failures))
+          specRow.push(String(specResult.stats.pending))
+          specRow.push(String(specResult.stats.skipped))
           specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
         } else {
           console.error('Could not find spec results for %s', specName)
