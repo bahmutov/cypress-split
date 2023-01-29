@@ -104,24 +104,36 @@ function cypressSplit(on, config) {
     const splitSpecs = getChunk(specs, splitN, splitIndex)
 
     const specRows = splitSpecs.map((specName, k) => {
-      const specResult = specResults[specName]
       const specRow = [String(k + 1), specName]
-      if (specResult) {
-        specRow.push(specResult.stats.passes)
-        specRow.push(specResult.stats.failures)
-        specRow.push(specResult.stats.pending)
-        specRow.push(specResult.stats.skipped)
-        specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
-      }
       return specRow
     })
     console.log(cTable.getTable(['k', 'spec'], specRows))
+
+    const addSpecResults = () => {
+      specRows.forEach((specRow) => {
+        const specName = specRow[1]
+        const specResult = specResults[specName]
+        if (specResult) {
+          console.log('spec results for %s', specName)
+          console.log(specResult.stats)
+          specRow.push(specResult.stats.passes)
+          specRow.push(specResult.stats.failures)
+          specRow.push(specResult.stats.pending)
+          specRow.push(specResult.stats.skipped)
+          specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
+        } else {
+          console.error('Could not find spec results for %s', specName)
+        }
+      })
+    }
 
     if (process.env.GITHUB_ACTIONS) {
       // only output the GitHub summary table AFTER the run
       // because GH does not show the summary before the job finishes
       // so we might as well wait for all spec results to come in
       on('after:run', () => {
+        addSpecResults()
+
         // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
         ghCore.summary
           .addHeading(
