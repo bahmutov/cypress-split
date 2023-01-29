@@ -8,6 +8,7 @@ const { getChunk } = require('./chunk')
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
+const humanizeDuration = require('humanize-duration')
 
 const label = 'cypress-split:'
 
@@ -31,6 +32,14 @@ function cypressSplit(on, config) {
   // or Cypress env variables
   debug('Cypress config env')
   debug(config.env)
+
+  // collect the test results to generate a better report
+  const specResults = {}
+  on('after:spec', (spec, results) => {
+    // console.log(results, results)
+    debug('after:spec for %s %o', spec.relative, results.stats)
+    specResults[spec.relative] = results
+  })
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
@@ -95,31 +104,62 @@ function cypressSplit(on, config) {
     const splitSpecs = getChunk(specs, splitN, splitIndex)
 
     const specRows = splitSpecs.map((specName, k) => {
-      return [String(k + 1), specName]
+      const specRow = [String(k + 1), specName]
+      return specRow
     })
     console.log(cTable.getTable(['k', 'spec'], specRows))
 
-    if (process.env.GITHUB_ACTIONS) {
-      // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
+    const addSpecResults = () => {
+      specRows.forEach((specRow) => {
+        const specName = specRow[1]
+        const specResult = specResults[specName]
+        if (specResult) {
+          debug('spec results for %s', specName)
+          debug(specResult.stats)
+          // have to convert numbers to strings
+          specRow.push(String(specResult.stats.passes))
+          specRow.push(String(specResult.stats.failures))
+          specRow.push(String(specResult.stats.pending))
+          specRow.push(String(specResult.stats.skipped))
+          specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
+        } else {
+          console.error('Could not find spec results for %s', specName)
+        }
+      })
+    }
 
-      ghCore.summary
-        .addHeading(
-          `${label} chunk ${splitIndex + 1} of ${splitN} (${
-            splitSpecs.length
-          } ${splitSpecs.length === 1 ? 'spec' : 'specs'})`,
-        )
-        .addTable([
-          [
-            { data: 'k', header: true },
-            { data: 'spec', header: true },
-          ],
-          ...specRows,
-        ])
-        .addLink(
-          'bahmutov/cypress-split',
-          'https://github.com/bahmutov/cypress-split',
-        )
-        .write()
+    if (process.env.GITHUB_ACTIONS) {
+      // only output the GitHub summary table AFTER the run
+      // because GH does not show the summary before the job finishes
+      // so we might as well wait for all spec results to come in
+      on('after:run', () => {
+        addSpecResults()
+
+        // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
+        ghCore.summary
+          .addHeading(
+            `${label} chunk ${splitIndex + 1} of ${splitN} (${
+              splitSpecs.length
+            } ${splitSpecs.length === 1 ? 'spec' : 'specs'})`,
+          )
+          .addTable([
+            [
+              { data: 'K', header: true },
+              { data: 'Spec', header: true },
+              { data: 'Passed ✅', header: true },
+              { data: 'Failed ❌', header: true },
+              { data: 'Pending ✋', header: true },
+              { data: 'Skipped ↩️', header: true },
+              { data: 'Duration 🕗', header: true },
+            ],
+            ...specRows,
+          ])
+          .addLink(
+            'bahmutov/cypress-split',
+            'https://github.com/bahmutov/cypress-split',
+          )
+          .write()
+      })
     }
 
     if (splitSpecs.length) {
