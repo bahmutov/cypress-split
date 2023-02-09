@@ -5,6 +5,8 @@
 
 ![Detailed plugin output on GitHub Actions](./images/details.png)
 
+📝 Read the blog post [Run Cypress Specs In Parallel For Free](https://glebbahmutov.com/blog/cypress-parallel-free/).
+
 ## Install
 
 Add this plugin as a dev dependency and include in your Cypress config file.
@@ -163,6 +165,31 @@ $ npx cypress run --env split=2,splitIndex=1,spec="spec1,spec2,spec3"
 
 # for CIs with automatically index detection
 $ npx cypress run --env split=true,spec="spec1,spec2,spec3"
+```
+
+## Cucumber feature specs
+
+Should work just the same, see the tested example in [bahmutov/cypress-split-cucumber-example](https://github.com/bahmutov/cypress-split-cucumber-example)
+
+```js
+// cypress.config.js
+const { defineConfig } = require('cypress')
+// https://github.com/bahmutov/cypress-split
+const cypressSplit = require('cypress-split')
+const cucumber = require('cypress-cucumber-preprocessor').default
+
+module.exports = defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {
+      cypressSplit(on, config)
+
+      on('file:preprocessor', cucumber())
+      // IMPORTANT: return the config object
+      return config
+    },
+    specPattern: 'cypress/e2e/**/*.feature',
+  },
+})
 ```
 
 ## Debugging
