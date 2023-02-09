@@ -158,7 +158,7 @@ pipeline {
         stage('set A') {
           steps {
             echo "Running build ${env.BUILD_ID}"
-            sh "npx cypress run --env split=4,splitIndex=0"
+            sh "npx cypress run --env split=2,splitIndex=0"
           }
         }
 
@@ -166,7 +166,7 @@ pipeline {
         stage('set B') {
           steps {
             echo "Running build ${env.BUILD_ID}"
-            sh "npx cypress run --env split=4,splitIndex=1"
+            sh "npx cypress run --env split=2,splitIndex=1"
           }
         }
       }
