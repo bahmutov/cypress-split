@@ -30,9 +30,12 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3
-      - name: Run split Cypress tests 🧪
+
+      - name: Run split Cypress E2E tests 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
+        with:
+          build: npm run test-names
         # using operating system process environment variables
         env:
           SPEC: 'cypress/e2e/spec-b.cy.js,cypress/e2e/spec-e.cy.js'
@@ -58,6 +61,8 @@ jobs:
       - name: Run split Cypress tests 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
+        with:
+          build: npm run test-names
         # using operating system process environment variables
         env:
           SPLIT: ${{ strategy.job-total }}
@@ -74,9 +79,29 @@ jobs:
         with:
           command: npm run empty
 
+  test-workflow-e2e:
+    # https://github.com/bahmutov/cypress-workflows
+    uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
+    with:
+      n: 3
+
+  test-workflow-component:
+    # https://github.com/bahmutov/cypress-workflows
+    uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
+    with:
+      component: true
+      n: 2
+
   release:
     if: github.ref == 'refs/heads/main'
-    needs: [test-empty, test-split, test-spec]
+    needs:
+      [
+        test-empty,
+        test-split,
+        test-spec,
+        test-workflow-e2e,
+        test-workflow-component,
+      ]
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout 🛎

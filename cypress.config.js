@@ -12,4 +12,17 @@ module.exports = defineConfig({
       return config
     },
   },
+
+  component: {
+    devServer: {
+      framework: 'react',
+      bundler: 'vite',
+    },
+    specPattern: 'components/*.cy.js',
+    setupNodeEvents(on, config) {
+      cypressSplit(on, config)
+      // IMPORTANT: return the config object
+      return config
+    },
+  },
 })
