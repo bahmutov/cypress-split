@@ -202,6 +202,35 @@ job2: npx cypress run --env split=3,splitIndex=1
 job3: npx cypress run --env split=3,splitIndex=2
 ```
 
+## Split component specs
+
+Works the same way as splitting E2E specs. Add this plugin to the `setupNodeEvents` callback in the `component` object in the config. See [cypress.config.js](./cypress.config.js) for example:
+
+```js
+// cypress.config.js
+const { defineConfig } = require('cypress')
+const cypressSplit = require('cypress-split')
+
+module.exports = defineConfig({
+  e2e: {
+    // baseUrl, etc
+  },
+
+  component: {
+    devServer: {
+      framework: 'react',
+      bundler: 'vite',
+    },
+    specPattern: 'components/*.cy.js',
+    setupNodeEvents(on, config) {
+      cypressSplit(on, config)
+      // IMPORTANT: return the config object
+      return config
+    },
+  },
+})
+```
+
 ## How does it work
 
 This plugin finds the Cypress specs using [find-cypress-specs](https://github.com/bahmutov/find-cypress-specs) and then splits the list into chunks using the machine index and the total number of machines. On some CIs (GitLab, Circle), the machine index and the total number of machines are available in the environment variables. On other CIs, you have to be explicit and pass these numbers yourself.

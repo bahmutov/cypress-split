@@ -85,9 +85,23 @@ jobs:
     with:
       n: 3
 
+  test-workflow-component:
+    # https://github.com/bahmutov/cypress-workflows
+    uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
+    with:
+      component: true
+      n: 2
+
   release:
     if: github.ref == 'refs/heads/main'
-    needs: [test-empty, test-split, test-spec]
+    needs:
+      [
+        test-empty,
+        test-split,
+        test-spec,
+        test-workflow-e2e,
+        test-workflow-component,
+      ]
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout 🛎
