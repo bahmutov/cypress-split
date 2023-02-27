@@ -12,4 +12,7 @@ module.exports = defineConfig({
       return config
     },
   },
+  component: {
+    specPattern: 'components/*.cy.js',
+  },
 })

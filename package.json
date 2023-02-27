@@ -10,7 +10,9 @@
     "test": "cypress run",
     "badges": "npx -p dependency-version-badge update-badge cypress",
     "semantic-release": "semantic-release",
-    "empty": "DEBUG=cypress-split SPLIT=10 SPLIT_INDEX=9 cypress run"
+    "empty": "DEBUG=cypress-split SPLIT=10 SPLIT_INDEX=9 cypress run",
+    "test-names": "find-cypress-specs --names",
+    "test-names:component": "find-cypress-specs --component --names"
   },
   "repository": {
     "type": "git",
@@ -32,11 +34,11 @@
     "@actions/core": "^1.10.0",
     "console.table": "^0.10.0",
     "debug": "^4.3.4",
-    "find-cypress-specs": "^1.24.0",
+    "find-cypress-specs": "^1.27.0",
     "humanize-duration": "^3.28.0"
   },
   "devDependencies": {
-    "cypress": "^12.3.0",
+    "cypress": "^12.7.0",
     "prettier": "^2.8.3",
     "semantic-release": "^20.0.2"
   }
