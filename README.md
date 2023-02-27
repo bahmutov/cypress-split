@@ -192,9 +192,9 @@ If you are running N containers in parallel, pass the zero-based index and the t
 
 ```
 # using process OS environment variables
-job1: SPLIT=3,SPLIT_INDEX=0 npx cypress run
-job2: SPLIT=3,SPLIT_INDEX=1 npx cypress run
-job3: SPLIT=3,SPLIT_INDEX=2 npx cypress run
+job1: SPLIT=3 SPLIT_INDEX=0 npx cypress run
+job2: SPLIT=3 SPLIT_INDEX=1 npx cypress run
+job3: SPLIT=3 SPLIT_INDEX=2 npx cypress run
 
 # using Cypress env option
 job1: npx cypress run --env split=3,splitIndex=0
@@ -232,8 +232,8 @@ You can still split the specs across several machines using `cypress-split`, jus
 
 ```
 # using process environment variables split all specs across 2 machines
-$ SPEC="spec1,spec2,spec3",SPLIT=2,SPLIT_INDEX=0 npx cypress run --spec "spec1,spec2,spec3"
-$ SPEC="spec1,spec2,spec3",SPLIT=2,SPLIT_INDEX=1 npx cypress run --spec "spec1,spec2,spec3"
+$ SPEC="spec1,spec2,spec3" SPLIT=2 SPLIT_INDEX=0 npx cypress run --spec "spec1,spec2,spec3"
+$ SPEC="spec1,spec2,spec3" SPLIT=2 SPLIT_INDEX=1 npx cypress run --spec "spec1,spec2,spec3"
 
 # using Cypress "env" option
 $ npx cypress run --env split=2,splitIndex=0,spec="spec1,spec2,spec3"
@@ -273,6 +273,12 @@ module.exports = defineConfig({
 To see diagnostic log messages from this plugin, set the environment variable `DEBUG=cypress-split`. It will give you all information necessary to understand what specs the plugin finds and how it splits them up. Here is an example debug output:
 
 ![Debug output](./images/debug-log.png)
+
+**Tip:** `cypress-split` uses [find-cypress-specs](https://github.com/bahmutov/find-cypress-specs) to discover specs. If something is wrong, it is useful to see debug messages from both modules:
+
+```
+DEBUG=cypress-split,find-cypress-specs npx cypress run
+```
 
 ## Small print
 
