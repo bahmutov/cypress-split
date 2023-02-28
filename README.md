@@ -5,7 +5,10 @@
 
 ![Detailed plugin output on GitHub Actions](./images/details.png)
 
-📝 Read the blog post [Run Cypress Specs In Parallel For Free](https://glebbahmutov.com/blog/cypress-parallel-free/).
+## Blog posts
+
+- 📝 [Run Cypress Specs In Parallel For Free](https://glebbahmutov.com/blog/cypress-parallel-free/)
+- 📝 [Split React Native Web Component Tests For Free](https://glebbahmutov.com/blog/split-react-native-component-tests/)
 
 ## Install
 
@@ -230,6 +233,8 @@ module.exports = defineConfig({
   },
 })
 ```
+
+Described in the blog post [Split React Native Web Component Tests For Free](https://glebbahmutov.com/blog/split-react-native-component-tests/).
 
 ## How does it work
 
