@@ -13,7 +13,7 @@ jobs:
       - name: Create matrix ⊹
         id: prepare
         # for reusable workflow, must use the full action reference
-        uses: bahmutov/gh-build-matrix@main
+        uses: bahmutov/gh-build-matrix@1.0.1
         with:
           n: 3 # number of containers to output
 
@@ -77,6 +77,7 @@ jobs:
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
         with:
+          build: npm run deps
           command: npm run empty
 
   test-workflow-e2e:
