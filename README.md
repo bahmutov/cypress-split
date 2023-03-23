@@ -5,6 +5,8 @@
 
 ![Detailed plugin output on GitHub Actions](./images/details.png)
 
+🎓 Covered in my course [Testing The Swag Store](https://cypress.tips/courses/swag-store)
+
 ## Blog posts
 
 - 📝 [Run Cypress Specs In Parallel For Free](https://glebbahmutov.com/blog/cypress-parallel-free/)
