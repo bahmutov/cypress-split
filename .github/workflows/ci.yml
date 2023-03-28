@@ -13,7 +13,7 @@ jobs:
       - name: Create matrix ⊹
         id: prepare
         # for reusable workflow, must use the full action reference
-        uses: bahmutov/gh-build-matrix@1.0.1
+        uses: bahmutov/gh-build-matrix@v1.0.1
         with:
           n: 3 # number of containers to output
 
