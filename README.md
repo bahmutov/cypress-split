@@ -316,6 +316,30 @@ To see diagnostic log messages from this plugin, set the environment variable `D
 DEBUG=cypress-split,find-cypress-specs npx cypress run
 ```
 
+If you notice that the plugin is not working as expected, and you are registering multiple Cypress plugins, you might be experiencing Cypress issue [#22428](https://github.com/cypress-io/cypress/issues/22428). Use [cypress-on-fix](https://github.com/bahmutov/cypress-on-fix) to register the plugins:
+
+```js
+const { defineConfig } = require('cypress')
+
+module.exports = defineConfig({
+  e2e: {
+    // baseUrl, etc
+    supportFile: false,
+    fixturesFolder: false,
+    setupNodeEvents(cypressOn, config) {
+      const on = require('cypress-on-fix')(cypressOn)
+      // use "on" to register plugins, for example
+      // https://github.com/bahmutov/cypress-split
+      require('cypress-split')(on, config)
+      // https://github.com/bahmutov/cypress-watch-and-reload
+      require('cypress-watch-and-reload/plugins')(on, config)
+      // https://github.com/bahmutov/cypress-code-coverage
+      require('@bahmutov/cypress-code-coverage/plugin')(on, config)
+    },
+  },
+})
+```
+
 ## Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2023
