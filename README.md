@@ -340,6 +340,10 @@ module.exports = defineConfig({
 })
 ```
 
+### Multiple plugins
+
+If you are using many Cypress plugins (for example my plugins covered in the [Cypress Plugins](https://cypress.tips/courses/cypress-plugins) course), you might notice that only the last plugin really works. This is due to a bug, and you can work around it using [cypress-on-fix](https://github.com/bahmutov/cypress-on-fix).
+
 ## Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2023
