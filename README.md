@@ -281,6 +281,17 @@ $ npx cypress run --env split=2,splitIndex=1,spec="spec1,spec2,spec3"
 $ npx cypress run --env split=true,spec="spec1,spec2,spec3"
 ```
 
+**Important:** if you are passing the list of specs using `--env spec="..."` and get the error `Cannot parse as valid JSON`, switch to using `SPEC` environment variable, see [#79](https://github.com/bahmutov/cypress-split/issues/79).
+
+```
+# instead of
+$ npx cypress run --env spec="..." --spec "..."
+Cannot parse as valid JSON
+
+# use
+$ SPEC=... npx cypress run --spec "..."
+```
+
 ## Cucumber feature specs
 
 Should work just the same, see the tested example in [bahmutov/cypress-split-cucumber-example](https://github.com/bahmutov/cypress-split-cucumber-example)
