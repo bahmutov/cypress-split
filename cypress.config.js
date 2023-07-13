@@ -6,6 +6,7 @@ module.exports = defineConfig({
     // baseUrl, etc
     supportFile: false,
     fixturesFolder: false,
+    excludeSpecPattern: '*.hot-update.js',
     setupNodeEvents(on, config) {
       cypressSplit(on, config)
       // IMPORTANT: return the config object
