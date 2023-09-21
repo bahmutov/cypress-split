@@ -5,7 +5,16 @@
 
 ![Detailed plugin output on GitHub Actions](./images/details.png)
 
-🎓 Covered in my course [Testing The Swag Store](https://cypress.tips/courses/swag-store)
+- 🎓 Covered in my course [Cypress Plugins](https://cypress.tips/courses/cypress-plugins)
+  - [Lesson m1: Run spec files in parallel using GitHub Actions](https://cypress.tips/courses/cypress-plugins/lessons/m1)
+  - [Lesson m2: Run Cypress specs in parallel on CircleCI](https://cypress.tips/courses/cypress-plugins/lessons/m2)
+  - [Lesson m3: Run specs in parallel on GitLab CI](https://cypress.tips/courses/cypress-plugins/lessons/m3)
+  - [Lesson m4: Very simple GitHub Actions setup with reusable workflow](https://cypress.tips/courses/cypress-plugins/lessons/m4)
+- 🎓 Covered in my course [Testing The Swag Store](https://cypress.tips/courses/swag-store)
+  - [Lesson 65: Speed up CI by splitting the specs](https://cypress.tips/courses/swag-store/lessons/lesson65)
+  - [Bonus 29: Combine the code coverage from split E2E test jobs](https://cypress.tips/courses/swag-store/lessons/bonus29)
+  - [Bonus 30: Split the component specs](https://cypress.tips/courses/swag-store/lessons/bonus30)
+  - [Bonus 31: A single workflow with combined code coverage](https://cypress.tips/courses/swag-store/lessons/bonus31)
 
 ## Blog posts
 
