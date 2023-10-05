@@ -72,6 +72,24 @@ jobs:
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
 
+  test-no-summary:
+    needs: prepare
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Run some Cypress tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        # run half of all specs
+        env:
+          SPLIT: 2
+          # run the second part of the list of specs
+          SPLIT_INDEX: 1
+          # do not write summary to github
+          SPLIT_SUMMARY: false
+
   test-empty:
     runs-on: ubuntu-22.04
     steps:
@@ -106,6 +124,7 @@ jobs:
         test-spec,
         test-workflow-e2e,
         test-workflow-component,
+        test-no-summary,
       ]
     runs-on: ubuntu-22.04
     steps:
