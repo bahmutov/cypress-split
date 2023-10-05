@@ -221,6 +221,10 @@ job2: npx cypress run --env split=3,splitIndex=1
 job3: npx cypress run --env split=3,splitIndex=2
 ```
 
+## CI summary
+
+To skip GitHub Actions summary, set an environment variable `SPLIT_SUMMARY=false`. By default, this plugin generates the summary.
+
 ## Split component specs
 
 Works the same way as splitting E2E specs. Add this plugin to the `setupNodeEvents` callback in the `component` object in the config. See [cypress.config.js](./cypress.config.js) for example:
