@@ -6,6 +6,7 @@
   "files": [
     "src"
   ],
+  "types": "src/types.d.ts",
   "scripts": {
     "test": "cypress run",
     "badges": "npx -p dependency-version-badge update-badge cypress",
