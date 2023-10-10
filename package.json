@@ -40,8 +40,8 @@
     "humanize-duration": "^3.28.0"
   },
   "devDependencies": {
-    "cypress": "^13.0.0",
-    "prettier": "^3.0.0",
+    "cypress": "^13.3.0",
+    "prettier": "^3.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "semantic-release": "^22.0.0",
