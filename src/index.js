@@ -99,7 +99,7 @@ function cypressSplit(on, config) {
     // console.log(specs)
     const splitN = Number(SPLIT)
     const splitIndex = Number(SPLIT_INDEX)
-    console.log('%s split %d of %d', label, splitIndex, splitN)
+    console.log('%s chunk %d of %d', label, splitIndex + 1, splitN)
 
     debug('get chunk %o', { specs, splitN, splitIndex })
     const splitSpecs = getChunk(specs, splitN, splitIndex)
