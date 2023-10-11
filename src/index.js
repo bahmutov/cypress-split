@@ -39,7 +39,7 @@ function cypressSplit(on, config) {
   on('after:spec', (spec, results) => {
     // console.log(results, results)
     debug('after:spec for %s %o', spec.relative, results.stats)
-    specResults[spec.relative] = results
+    specResults[spec.absolute] = results
   })
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
@@ -113,9 +113,11 @@ function cypressSplit(on, config) {
 
     const addSpecResults = () => {
       specRows.forEach((specRow) => {
-        const specName = specRow[1]
-        const specResult = specResults[specName]
+        const specPath = specRow[1]
+        const specResult = specResults[specPath]
         if (specResult) {
+          const specName = specResult.spec.name
+          specRow[1] = specName
           debug('spec results for %s', specName)
           debug(specResult.stats)
           // have to convert numbers to strings
@@ -125,7 +127,7 @@ function cypressSplit(on, config) {
           specRow.push(String(specResult.stats.skipped))
           specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
         } else {
-          console.error('Could not find spec results for %s', specName)
+          console.error('Could not find spec results for %s', specPath)
         }
       })
     }
