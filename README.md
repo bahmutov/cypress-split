@@ -398,6 +398,26 @@ module.exports = defineConfig({
 
 If you are using many Cypress plugins (for example my plugins covered in the [Cypress Plugins](https://cypress.tips/courses/cypress-plugins) course), you might notice that only the last plugin really works. This is due to a bug, and you can work around it using [cypress-on-fix](https://github.com/bahmutov/cypress-on-fix).
 
+## Your specPattern list
+
+If you set your own specs via `config.specPattern`, just do it before using the plugin to split them.
+
+```js
+setupNodeEvents(on, config) {
+  // user sets their own custom specPattern list of specs
+  // make sure the list of specs is relative to the folder
+  // with the Cypress config file!
+  config.specPattern = [
+    '../cypress/e2e/spec-c.cy.js',
+    '../cypress/e2e/spec-d.cy.js',
+    '../cypress/e2e/spec-e.cy.js',
+  ]
+  cypressSplit(on, config)
+  // IMPORTANT: return the config object
+  return config
+},
+```
+
 ## Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2023
