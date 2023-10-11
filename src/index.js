@@ -91,8 +91,9 @@ function cypressSplit(on, config) {
 
   if (isDefined(SPLIT) && isDefined(SPLIT_INDEX)) {
     if (!specs) {
+      const returnAbsolute = true
       // @ts-ignore
-      specs = getSpecs(config)
+      specs = getSpecs(config, undefined, returnAbsolute)
     }
 
     console.log('%s there are %d found specs', label, specs.length)

@@ -13,6 +13,7 @@
     "semantic-release": "semantic-release",
     "demo": "DEBUG=cypress-split,find-cypress-specs SPLIT=2 SPLIT_INDEX=0 cypress run",
     "empty": "DEBUG=cypress-split SPLIT=10 SPLIT_INDEX=9 cypress run",
+    "user-specs": "DEBUG=cypress-split,find-cypress-specs SPLIT=2 SPLIT_INDEX=0 cypress run --config-file examples/user-spec-pattern.config.js",
     "test-names": "find-cypress-specs --names",
     "test-names:component": "find-cypress-specs --component --names",
     "deps": "npm audit --report --omit dev"
@@ -37,7 +38,7 @@
     "@actions/core": "^1.10.0",
     "console.table": "^0.10.0",
     "debug": "^4.3.4",
-    "find-cypress-specs": "1.35.1",
+    "find-cypress-specs": "1.36.0",
     "humanize-duration": "^3.28.0"
   },
   "devDependencies": {
