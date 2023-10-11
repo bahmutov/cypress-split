@@ -102,6 +102,17 @@ jobs:
           build: npm run deps
           command: npm run empty
 
+  test-user-spec-list:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+      - name: Split explicit user list of specs 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run user-specs
+
   test-workflow-e2e:
     # https://github.com/bahmutov/cypress-workflows
     uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
@@ -125,6 +136,7 @@ jobs:
         test-workflow-e2e,
         test-workflow-component,
         test-no-summary,
+        test-user-spec-list,
       ]
     runs-on: ubuntu-22.04
     steps:
