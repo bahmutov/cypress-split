@@ -35,12 +35,16 @@ function cypressSplit(on, config) {
     debug(config.spec)
   }
 
+  // if we want to see all settings
+  // console.log(config)
+
   // the user can specify the split flag / numbers
   // using either OS process environment variables
   // or Cypress env variables
   debug('Cypress config env')
   debug(config.env)
   debug('current working directory %s', process.cwd())
+  debug('project root folder %s', config.projectRoot)
 
   // collect the test results to generate a better report
   const specResults = {}
