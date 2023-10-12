@@ -1,3 +1,4 @@
+/// <reference types="Cypress" />
 // @ts-check
 
 const debug = require('debug')('cypress-split')
@@ -15,11 +16,17 @@ const label = 'cypress-split:'
 
 const isDefined = (x) => typeof x !== 'undefined'
 
+/**
+ * Initialize Cypress split plugin using Cypress "on" and "config" arguments.
+ * @param {Cypress.PluginEvents} on Cypress "on" event registration
+ * @param {Cypress.Config} config Cypress config object
+ */
 function cypressSplit(on, config) {
   // maybe the user called this function with a single argument
   // then we assume it is the config object
   if (arguments.length === 1) {
     debug('single argument, assuming it is the config object')
+    // @ts-ignore
     config = on
   }
 
@@ -33,13 +40,22 @@ function cypressSplit(on, config) {
   // or Cypress env variables
   debug('Cypress config env')
   debug(config.env)
+  debug('current working directory %s', process.cwd())
 
   // collect the test results to generate a better report
   const specResults = {}
   on('after:spec', (spec, results) => {
     // console.log(results, results)
     debug('after:spec for %s %o', spec.relative, results.stats)
-    specResults[spec.relative] = results
+    // make sure there are no duplicate specs for some reason
+    if (specResults[spec.absolute]) {
+      console.error(
+        'Warning: cypress-split found duplicate test results for %s',
+        spec.absolute,
+      )
+    }
+
+    specResults[spec.absolute] = results
   })
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
@@ -111,11 +127,14 @@ function cypressSplit(on, config) {
     })
     console.log(cTable.getTable(['k', 'spec'], specRows))
 
+    const cwd = process.cwd()
     const addSpecResults = () => {
       specRows.forEach((specRow) => {
-        const specName = specRow[1]
-        const specResult = specResults[specName]
+        const specAbsolutePath = specRow[1]
+        const specResult = specResults[specAbsolutePath]
         if (specResult) {
+          // shorted to relative filename
+          const specName = path.relative(cwd, specAbsolutePath)
           debug('spec results for %s', specName)
           debug(specResult.stats)
           // have to convert numbers to strings
@@ -125,7 +144,7 @@ function cypressSplit(on, config) {
           specRow.push(String(specResult.stats.skipped))
           specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
         } else {
-          console.error('Could not find spec results for %s', specName)
+          console.error('Could not find spec results for %s', specAbsolutePath)
         }
       })
     }
@@ -172,9 +191,13 @@ function cypressSplit(on, config) {
     if (splitSpecs.length) {
       debug('setting the spec pattern to')
       debug(splitSpecs)
+      // if working with Cypress v9, there is integration folder
+      // @ts-ignore
       if (config.integrationFolder) {
         debug('setting test files')
+        // @ts-ignore
         config.testFiles = splitSpecs.map((name) =>
+          // @ts-ignore
           path.relative(config.integrationFolder, name),
         )
       } else {
