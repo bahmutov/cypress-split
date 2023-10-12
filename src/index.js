@@ -75,7 +75,11 @@ function cypressSplit(on, config) {
   if (process.env.SPLIT_INDEX1 || config.env.splitIndex) {
     const indexOne = process.env.SPLIT_INDEX1 || config.env.splitIndex
     SPLIT_INDEX = Number(indexOne) - 1
-    debug('set SPLIT_INDEX to %d from %s', indexOne)
+    debug(
+      'set SPLIT_INDEX to %d from index starting with 1 "%s"',
+      SPLIT_INDEX,
+      indexOne,
+    )
   }
 
   // potentially a list of files to run / split
