@@ -45,6 +45,22 @@ jobs:
           SPEC: 'cypress/e2e/spec-b.cy.js,cypress/e2e/spec-e.cy.js'
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
+          DEBUG: cypress-split
+
+  test-subfolder:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Run Cypress E2E tests in the subfolder 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          build: npm run subfolder
+        env:
+          SPLIT: 2
+          SPLIT_INDEX: 0
 
   test-subfolder:
     runs-on: ubuntu-22.04
