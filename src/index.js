@@ -1,3 +1,4 @@
+/// <reference types="Cypress" />
 // @ts-check
 
 const debug = require('debug')('cypress-split')
@@ -15,11 +16,17 @@ const label = 'cypress-split:'
 
 const isDefined = (x) => typeof x !== 'undefined'
 
+/**
+ * Initialize Cypress split plugin using Cypress "on" and "config" arguments.
+ * @param {Cypress.PluginEvents} on Cypress "on" event registration
+ * @param {Cypress.Config} config Cypress config object
+ */
 function cypressSplit(on, config) {
   // maybe the user called this function with a single argument
   // then we assume it is the config object
   if (arguments.length === 1) {
     debug('single argument, assuming it is the config object')
+    // @ts-ignore
     config = on
   }
 
@@ -33,13 +40,26 @@ function cypressSplit(on, config) {
   // or Cypress env variables
   debug('Cypress config env')
   debug(config.env)
+  debug('current working directory %s', process.cwd())
 
   // collect the test results to generate a better report
   const specResults = {}
+  // map from absolute to relative spec names as reported by Cypress
+  const specAbsoluteToRelative = {}
+
   on('after:spec', (spec, results) => {
     // console.log(results, results)
     debug('after:spec for %s %o', spec.relative, results.stats)
-    specResults[spec.relative] = results
+    // make sure there are no duplicate specs for some reason
+    if (specResults[spec.absolute]) {
+      console.error(
+        'Warning: cypress-split found duplicate test results for %s',
+        spec.absolute,
+      )
+    }
+
+    specResults[spec.absolute] = results
+    specAbsoluteToRelative[spec.absolute] = spec.relative
   })
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
@@ -51,6 +71,10 @@ function cypressSplit(on, config) {
     specs = SPEC.split(',')
       .map((s) => s.trim())
       .filter(Boolean)
+      .map((specFilename) => {
+        // make sure every spec filename is absolute
+        return path.resolve(specFilename)
+      })
     console.log(
       '%s have explicit %d spec %s',
       label,
@@ -103,20 +127,29 @@ function cypressSplit(on, config) {
     console.log('%s chunk %d of %d', label, splitIndex + 1, splitN)
 
     debug('get chunk %o', { specs, splitN, splitIndex })
+    /** @type {string[]} absolute spec filenames */
     const splitSpecs = getChunk(specs, splitN, splitIndex)
+    debug('split specs')
+    debug(splitSpecs)
 
-    const specRows = splitSpecs.map((specName, k) => {
-      const specRow = [String(k + 1), specName]
-      return specRow
+    const cwd = process.cwd()
+    console.log('spec from the current directory %s', cwd)
+    const nameRows = splitSpecs.map((specName, k) => {
+      const row = [String(k + 1), path.relative(cwd, specName)]
+      return row
     })
-    console.log(cTable.getTable(['k', 'spec'], specRows))
+    console.log(cTable.getTable(['k', 'spec'], nameRows))
 
     const addSpecResults = () => {
-      specRows.forEach((specRow) => {
-        const specName = specRow[1]
-        const specResult = specResults[specName]
+      // at this point, the specAbsoluteToRelative object should be filled
+      const specRows = splitSpecs.map((absoluteSpecPath, k) => {
+        const relativeName = specAbsoluteToRelative[absoluteSpecPath]
+        const specRow = [String(k + 1), relativeName]
+
+        const specResult = specResults[absoluteSpecPath]
         if (specResult) {
-          debug('spec results for %s', specName)
+          // shorted to relative filename
+          debug('spec results for %s', relativeName)
           debug(specResult.stats)
           // have to convert numbers to strings
           specRow.push(String(specResult.stats.passes))
@@ -125,9 +158,13 @@ function cypressSplit(on, config) {
           specRow.push(String(specResult.stats.skipped))
           specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
         } else {
-          console.error('Could not find spec results for %s', specName)
+          console.error('Could not find spec results for %s', absoluteSpecPath)
         }
+
+        return specRow
       })
+
+      return specRows
     }
 
     const shouldWriteSummary = getEnvironmentFlag('SPLIT_SUMMARY', true)
@@ -139,7 +176,7 @@ function cypressSplit(on, config) {
         // because GH does not show the summary before the job finishes
         // so we might as well wait for all spec results to come in
         on('after:run', () => {
-          addSpecResults()
+          const specRows = addSpecResults()
 
           // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
           ghCore.summary
@@ -172,9 +209,13 @@ function cypressSplit(on, config) {
     if (splitSpecs.length) {
       debug('setting the spec pattern to')
       debug(splitSpecs)
+      // if working with Cypress v9, there is integration folder
+      // @ts-ignore
       if (config.integrationFolder) {
         debug('setting test files')
+        // @ts-ignore
         config.testFiles = splitSpecs.map((name) =>
+          // @ts-ignore
           path.relative(config.integrationFolder, name),
         )
       } else {
