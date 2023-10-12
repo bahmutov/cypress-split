@@ -44,6 +44,9 @@ function cypressSplit(on, config) {
 
   // collect the test results to generate a better report
   const specResults = {}
+  // map from absolute to relative spec names as reported by Cypress
+  const specAbsoluteToRelative = {}
+
   on('after:spec', (spec, results) => {
     // console.log(results, results)
     debug('after:spec for %s %o', spec.relative, results.stats)
@@ -56,6 +59,7 @@ function cypressSplit(on, config) {
     }
 
     specResults[spec.absolute] = results
+    specAbsoluteToRelative[spec.absolute] = spec.relative
   })
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
@@ -119,23 +123,32 @@ function cypressSplit(on, config) {
     console.log('%s chunk %d of %d', label, splitIndex + 1, splitN)
 
     debug('get chunk %o', { specs, splitN, splitIndex })
+    /** @type {string[]} absolute spec filenames */
     const splitSpecs = getChunk(specs, splitN, splitIndex)
 
-    const specRows = splitSpecs.map((specName, k) => {
-      const specRow = [String(k + 1), specName]
-      return specRow
-    })
-    console.log(cTable.getTable(['k', 'spec'], specRows))
-
     const cwd = process.cwd()
+    console.log('spec from the current directory %s', cwd)
+    const nameRows = splitSpecs.map((specName, k) => {
+      const row = [String(k + 1), path.relative(cwd, specName)]
+      return row
+    })
+    console.log(cTable.getTable(['k', 'spec'], nameRows))
+
     const addSpecResults = () => {
+      // at this point, the specAbsoluteToRelative object should be filled
+      const specRows = splitSpecs.map((absoluteSpecPath, k) => {
+        const relativeName = specAbsoluteToRelative[absoluteSpecPath]
+        const specRow = [String(k + 1), relativeName]
+        return specRow
+      })
+
       specRows.forEach((specRow) => {
         const specAbsolutePath = specRow[1]
         const specResult = specResults[specAbsolutePath]
         if (specResult) {
           // shorted to relative filename
-          const specName = path.relative(cwd, specAbsolutePath)
-          debug('spec results for %s', specName)
+          const relativeName = specAbsoluteToRelative[specAbsolutePath]
+          debug('spec results for %s', relativeName)
           debug(specResult.stats)
           // have to convert numbers to strings
           specRow.push(String(specResult.stats.passes))
