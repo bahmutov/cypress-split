@@ -160,6 +160,8 @@ function cypressSplit(on, config) {
           console.error('Could not find spec results for %s', specAbsolutePath)
         }
       })
+
+      return specRows
     }
 
     const shouldWriteSummary = getEnvironmentFlag('SPLIT_SUMMARY', true)
@@ -171,7 +173,7 @@ function cypressSplit(on, config) {
         // because GH does not show the summary before the job finishes
         // so we might as well wait for all spec results to come in
         on('after:run', () => {
-          addSpecResults()
+          const specRows = addSpecResults()
 
           // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
           ghCore.summary
