@@ -221,6 +221,14 @@ job2: npx cypress run --env split=3,splitIndex=1
 job3: npx cypress run --env split=3,splitIndex=2
 ```
 
+### Index starts at 1
+
+Some CIs provide an agent index that already starts at 1. You can pass it via `SPLIT_INDEX1` instead of `SPLIT_INDEX`
+
+```
+job1: SPLIT=3 SPLIT_INDEX1=1 npx cypress run
+```
+
 ## CI summary
 
 To skip GitHub Actions summary, set an environment variable `SPLIT_SUMMARY=false`. By default, this plugin generates the summary.
