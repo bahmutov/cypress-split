@@ -139,15 +139,10 @@ function cypressSplit(on, config) {
       const specRows = splitSpecs.map((absoluteSpecPath, k) => {
         const relativeName = specAbsoluteToRelative[absoluteSpecPath]
         const specRow = [String(k + 1), relativeName]
-        return specRow
-      })
 
-      specRows.forEach((specRow) => {
-        const specAbsolutePath = specRow[1]
-        const specResult = specResults[specAbsolutePath]
+        const specResult = specResults[absoluteSpecPath]
         if (specResult) {
           // shorted to relative filename
-          const relativeName = specAbsoluteToRelative[specAbsolutePath]
           debug('spec results for %s', relativeName)
           debug(specResult.stats)
           // have to convert numbers to strings
@@ -157,8 +152,10 @@ function cypressSplit(on, config) {
           specRow.push(String(specResult.stats.skipped))
           specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
         } else {
-          console.error('Could not find spec results for %s', specAbsolutePath)
+          console.error('Could not find spec results for %s', absoluteSpecPath)
         }
+
+        return specRow
       })
 
       return specRows
