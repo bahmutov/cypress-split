@@ -155,12 +155,20 @@ function cypressSplit(on, config) {
           // shorted to relative filename
           debug('spec results for %s', relativeName)
           debug(specResult.stats)
+          const humanSpecDuration = humanizeDuration(
+            specResult.stats.wallClockDuration,
+          )
+          debug(
+            'spec took %d ms, human duration %s',
+            specResult.stats.wallClockDuration,
+            humanSpecDuration,
+          )
           // have to convert numbers to strings
           specRow.push(String(specResult.stats.passes))
           specRow.push(String(specResult.stats.failures))
           specRow.push(String(specResult.stats.pending))
           specRow.push(String(specResult.stats.skipped))
-          specRow.push(humanizeDuration(specResult.stats.wallClockDuration))
+          specRow.push(humanSpecDuration)
         } else {
           console.error('Could not find spec results for %s', absoluteSpecPath)
         }

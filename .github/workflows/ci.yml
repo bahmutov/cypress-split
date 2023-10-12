@@ -45,6 +45,7 @@ jobs:
           SPEC: 'cypress/e2e/spec-b.cy.js,cypress/e2e/spec-e.cy.js'
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
+          DEBUG: cypress-split
 
   test-subfolder:
     runs-on: ubuntu-22.04
