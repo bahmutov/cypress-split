@@ -142,6 +142,24 @@ jobs:
       component: true
       n: 2
 
+  # using SPLIT_INDEX1 to start index at 1
+  test-index1:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Run split Cypress E2E tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        # using operating system process environment variables
+        env:
+          SPEC: 'cypress/e2e/spec-b.cy.js,cypress/e2e/spec-e.cy.js'
+          SPLIT: 2
+          # should run the first spec "spec-b" in the list
+          SPLIT_INDEX1: 1
+          DEBUG: 'cypress-split'
+
   release:
     if: github.ref == 'refs/heads/main'
     needs:
@@ -154,6 +172,7 @@ jobs:
         test-no-summary,
         test-user-spec-list,
         test-subfolder,
+        test-index1,
       ]
     runs-on: ubuntu-22.04
     steps:

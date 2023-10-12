@@ -68,6 +68,20 @@ function cypressSplit(on, config) {
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
+
+  // some CI systems like TeamCity provide agent index starting with 1
+  // let's check for SPLIT_INDEX1 and if it is set,
+  // use it instead of zero-based SPLIT_INDEX
+  if (process.env.SPLIT_INDEX1 || config.env.splitIndex) {
+    const indexOne = process.env.SPLIT_INDEX1 || config.env.splitIndex
+    SPLIT_INDEX = Number(indexOne) - 1
+    debug(
+      'set SPLIT_INDEX to %d from index starting with 1 "%s"',
+      SPLIT_INDEX,
+      indexOne,
+    )
+  }
+
   // potentially a list of files to run / split
   let SPEC = process.env.SPEC || config.env.spec || config.env.SPEC
   let specs
