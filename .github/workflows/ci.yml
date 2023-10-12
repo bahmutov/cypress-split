@@ -46,6 +46,21 @@ jobs:
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
 
+  test-subfolder:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Run Cypress E2E tests in the subfolder 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          build: npm run subfolder
+        env:
+          SPLIT: 2
+          SPLIT_INDEX: 0
+
   test-split:
     needs: prepare
     runs-on: ubuntu-22.04
@@ -137,6 +152,7 @@ jobs:
         test-workflow-component,
         test-no-summary,
         test-user-spec-list,
+        test-subfolder,
       ]
     runs-on: ubuntu-22.04
     steps:
