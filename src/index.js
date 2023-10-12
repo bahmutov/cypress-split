@@ -71,6 +71,10 @@ function cypressSplit(on, config) {
     specs = SPEC.split(',')
       .map((s) => s.trim())
       .filter(Boolean)
+      .map((specFilename) => {
+        // make sure every spec filename is absolute
+        return path.resolve(specFilename)
+      })
     console.log(
       '%s have explicit %d spec %s',
       label,
