@@ -155,8 +155,9 @@ function cypressSplit(on, config) {
           // shorted to relative filename
           debug('spec results for %s', relativeName)
           debug(specResult.stats)
+          // the field depends on the Cypress version
           const humanSpecDuration = humanizeDuration(
-            specResult.stats.wallClockDuration,
+            specResult.stats.duration || specResult.stats.wallClockDuration,
           )
           debug(
             'spec took %d ms, human duration %s',
