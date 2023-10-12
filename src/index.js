@@ -125,6 +125,8 @@ function cypressSplit(on, config) {
     debug('get chunk %o', { specs, splitN, splitIndex })
     /** @type {string[]} absolute spec filenames */
     const splitSpecs = getChunk(specs, splitN, splitIndex)
+    debug('split specs')
+    debug(splitSpecs)
 
     const cwd = process.cwd()
     console.log('spec from the current directory %s', cwd)
