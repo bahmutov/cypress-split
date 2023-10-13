@@ -219,13 +219,13 @@ function cypressSplit(on, config) {
           // shorted to relative filename
           debug('spec results for %s', relativeName)
           debug(specResult.stats)
-          // the field depends on the Cypress version
-          const humanSpecDuration = humanizeDuration(
-            specResult.stats.duration || specResult.stats.wallClockDuration,
-          )
+          // the duration field depends on the Cypress version
+          const specDuration =
+            specResult.stats.duration || specResult.stats.wallClockDuration
+          const humanSpecDuration = humanizeDuration(specDuration)
           debug(
             'spec took %d ms, human duration %s',
-            specResult.stats.wallClockDuration,
+            specDuration,
             humanSpecDuration,
           )
           // have to convert numbers to strings
@@ -268,7 +268,13 @@ function cypressSplit(on, config) {
         const timings = {
           durations: specDurations,
         }
-        console.log(JSON.stringify(timings, null, 2))
+
+        const timingsString = JSON.stringify(timings, null, 2)
+        if (!fs.existsSync(SPLIT_FILE)) {
+          console.log('%s writing out timings file %s', label, SPLIT_FILE)
+          fs.writeFileSync(SPLIT_FILE, timingsString, 'utf8')
+        }
+        console.log(timingsString)
       }
 
       const shouldWriteSummary = getEnvironmentFlag('SPLIT_SUMMARY', true)
