@@ -229,6 +229,39 @@ Some CIs provide an agent index that already starts at 1. You can pass it via `S
 job1: SPLIT=3 SPLIT_INDEX1=1 npx cypress run
 ```
 
+## Split specs based on timings
+
+If you know the spec timings, you can create a JSON file and pass the timings to this plugin. The list of specs will be split into N machines to make the total durations for each machine approximately equal. You can see an example [timings.json](./timings.json) file:
+
+```json
+{
+  "durations": [
+    {
+      "spec": "cypress/e2e/chunks.cy.js",
+      "duration": 300
+    },
+    {
+      "spec": "cypress/e2e/spec-a.cy.js",
+      "duration": 10050
+    },
+    ...
+  ]
+}
+```
+
+You can pass the JSON filename via `SPLIT_FILE` environment variable or Cypress`env` variable.
+
+```
+# split all specs across 3 machines using known spec timings
+# loaded from "timings.json" file
+$ SPLIT_FILE=timings.json SPLIT=3 npx cypress run
+
+# the equivalent syntax using Cypress --env argument
+$ npx cypress run --env split=3,splitFile=timings.json
+```
+
+For specs not in the timings file, it will use average duration of the known specs.
+
 ## CI summary
 
 To skip GitHub Actions summary, set an environment variable `SPLIT_SUMMARY=false`. By default, this plugin generates the summary.
