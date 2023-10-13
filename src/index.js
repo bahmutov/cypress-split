@@ -152,7 +152,7 @@ function cypressSplit(on, config) {
     let splitSpecs
 
     const cwd = process.cwd()
-    console.log('spec from the current directory %s', cwd)
+    console.log('%s specs from the current directory %s', cwd, label)
 
     if (SPLIT_FILE) {
       debug('loading split file %s', SPLIT_FILE)
@@ -190,6 +190,16 @@ function cypressSplit(on, config) {
         debug(sums)
 
         splitSpecs = chunks[splitIndex].map((item) => item.specName)
+        console.log(
+          '%s split %d specs using durations from %s file',
+          label,
+          specsWithDurations.length,
+          SPLIT_FILE,
+        )
+        console.log(
+          '%s approximate total duration for current chunk is %s (plus Cypress overhead)',
+          humanizeDuration(sums[splitIndex]),
+        )
       } catch (err) {
         console.error('%s Could not split specs by duration', label)
         console.error(err.message)
