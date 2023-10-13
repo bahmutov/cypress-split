@@ -140,6 +140,17 @@ jobs:
         with:
           command: npm run timings
 
+  test-timings-no-file:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+      - name: Split specs based on non-existen timings json file 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run timings-no-file
+
   test-workflow-e2e:
     # https://github.com/bahmutov/cypress-workflows
     uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
@@ -185,6 +196,7 @@ jobs:
         test-subfolder,
         test-index1,
         test-timings,
+        test-timings-no-file,
       ]
     runs-on: ubuntu-22.04
     steps:

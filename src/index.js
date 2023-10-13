@@ -156,39 +156,46 @@ function cypressSplit(on, config) {
 
     if (SPLIT_FILE) {
       debug('loading split file %s', SPLIT_FILE)
-      const splitFile = JSON.parse(fs.readFileSync(SPLIT_FILE, 'utf8'))
-      const previousDurations = splitFile.durations
-      const averageDuration =
-        previousDurations
-          .map((item) => item.duration)
-          .reduce((sum, duration) => (sum += duration), 0) /
-        previousDurations.length
-      const specsWithDurations = specs.map((specName) => {
-        const relativeSpec = path.relative(cwd, specName)
-        const foundInfo = previousDurations.find(
-          (item) => item.spec === relativeSpec,
-        )
-        if (!foundInfo) {
-          return {
-            specName,
-            duration: averageDuration,
+      try {
+        const splitFile = JSON.parse(fs.readFileSync(SPLIT_FILE, 'utf8'))
+        const previousDurations = splitFile.durations
+        const averageDuration =
+          previousDurations
+            .map((item) => item.duration)
+            .reduce((sum, duration) => (sum += duration), 0) /
+          previousDurations.length
+        const specsWithDurations = specs.map((specName) => {
+          const relativeSpec = path.relative(cwd, specName)
+          const foundInfo = previousDurations.find(
+            (item) => item.spec === relativeSpec,
+          )
+          if (!foundInfo) {
+            return {
+              specName,
+              duration: averageDuration,
+            }
+          } else {
+            return {
+              specName,
+              duration: foundInfo.duration,
+            }
           }
-        } else {
-          return {
-            specName,
-            duration: foundInfo.duration,
-          }
-        }
-      })
-      debug('splitting by duration %d ways', splitN)
-      debug(specsWithDurations)
-      const { chunks, sums } = splitByDuration(splitN, specsWithDurations)
-      debug('split by duration')
-      debug(chunks)
-      debug('sums of durations for chunks')
-      debug(sums)
+        })
+        debug('splitting by duration %d ways', splitN)
+        debug(specsWithDurations)
+        const { chunks, sums } = splitByDuration(splitN, specsWithDurations)
+        debug('split by duration')
+        debug(chunks)
+        debug('sums of durations for chunks')
+        debug(sums)
 
-      splitSpecs = chunks[splitIndex].map((item) => item.specName)
+        splitSpecs = chunks[splitIndex].map((item) => item.specName)
+      } catch (err) {
+        console.error('%s Could not split specs by duration', label)
+        console.error(err.message)
+        console.error('%s splitting as is by name', label)
+        splitSpecs = getChunk(specs, splitN, splitIndex)
+      }
     } else {
       splitSpecs = getChunk(specs, splitN, splitIndex)
     }
@@ -237,15 +244,41 @@ function cypressSplit(on, config) {
       return specRows
     }
 
-    const shouldWriteSummary = getEnvironmentFlag('SPLIT_SUMMARY', true)
-    debug('shouldWriteSummary', shouldWriteSummary)
+    on('after:run', () => {
+      if (SPLIT_FILE) {
+        console.log('%s here are spec timings', label)
 
-    if (shouldWriteSummary) {
-      if (process.env.GITHUB_ACTIONS) {
+        const specDurations = splitSpecs
+          .map((absoluteSpecPath, k) => {
+            const relativeName = specAbsoluteToRelative[absoluteSpecPath]
+            const specResult = specResults[absoluteSpecPath]
+            if (specResult) {
+              return {
+                spec: relativeName,
+                duration:
+                  specResult.stats.duration ||
+                  specResult.stats.wallClockDuration,
+              }
+            } else {
+              return
+            }
+          })
+          .filter(Boolean)
+
+        const timings = {
+          durations: specDurations,
+        }
+        console.log(JSON.stringify(timings, null, 2))
+      }
+
+      const shouldWriteSummary = getEnvironmentFlag('SPLIT_SUMMARY', true)
+      debug('shouldWriteSummary', shouldWriteSummary)
+
+      if (shouldWriteSummary) {
         // only output the GitHub summary table AFTER the run
         // because GH does not show the summary before the job finishes
         // so we might as well wait for all spec results to come in
-        on('after:run', () => {
+        if (process.env.GITHUB_ACTIONS) {
           const specRows = addSpecResults()
 
           // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
@@ -272,9 +305,9 @@ function cypressSplit(on, config) {
               'https://github.com/bahmutov/cypress-split',
             )
             .write()
-        })
+        }
       }
-    }
+    })
 
     if (splitSpecs.length) {
       debug('setting the spec pattern to')
