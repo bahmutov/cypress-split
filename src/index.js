@@ -268,7 +268,14 @@ function cypressSplit(on, config) {
         const timings = {
           durations: specDurations,
         }
-        console.log(JSON.stringify(timings, null, 2))
+
+        const timingsString = JSON.stringify(timings, null, 2)
+        if (!fs.existsSync(SPLIT_FILE)) {
+          console.log('%s writing out timings file %s', label, SPLIT_FILE)
+          fs.writeFileSync(SPLIT_FILE, timingsString, 'utf8')
+        } else {
+          console.log(timingsString)
+        }
       }
 
       const shouldWriteSummary = getEnvironmentFlag('SPLIT_SUMMARY', true)
