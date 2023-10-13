@@ -262,6 +262,8 @@ $ npx cypress run --env split=3,splitFile=timings.json
 
 For specs not in the timings file, it will use average duration of the known specs. The timings file might not exist, in this case the specs are split by name. At the end of the run, the duration of all run specs is printed and can be saved into the timings JSON file. **Note:** you would need to combine the timings from different runners into a single JSON file yourself.
 
+If the timings file does not exist yet, the timings will be written into the file after the run finishes.
+
 ## CI summary
 
 To skip GitHub Actions summary, set an environment variable `SPLIT_SUMMARY=false`. By default, this plugin generates the summary.
