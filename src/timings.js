@@ -3,6 +3,7 @@
  * in each item. Sorts the list first, then round-robin fills
  * the lists. Put the item into the list with the smallest sum.
  * @param {number} n Number of output lists
+ * @returns {any}
  */
 function splitByDuration(n, list) {
   const result = []
@@ -20,9 +21,9 @@ function splitByDuration(n, list) {
     sums[smallestIndex] += item.duration
   })
 
-  console.table(result)
-  console.table(sums)
-  return result
+  // console.table(result)
+  // console.table(sums)
+  return { chunks: result, sums }
 }
 
 module.exports = { splitByDuration }

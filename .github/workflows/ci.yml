@@ -129,6 +129,17 @@ jobs:
         with:
           command: npm run user-specs
 
+  test-timings:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+      - name: Split specs based on timings json file 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run timings
+
   test-workflow-e2e:
     # https://github.com/bahmutov/cypress-workflows
     uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
@@ -173,6 +184,7 @@ jobs:
         test-user-spec-list,
         test-subfolder,
         test-index1,
+        test-timings,
       ]
     runs-on: ubuntu-22.04
     steps:

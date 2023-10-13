@@ -21,8 +21,8 @@ it('splits specs based on timings', () => {
       duration: 1000,
     },
   ]
-  const chunks = splitByDuration(2, list)
-  expect(chunks).to.deep.equal([
+  const { chunks, sums } = splitByDuration(2, list)
+  expect(chunks, 'chunks').to.deep.equal([
     [
       {
         spec: 'b',
@@ -44,6 +44,7 @@ it('splits specs based on timings', () => {
       },
     ],
   ])
+  expect(sums, 'duration sums').to.deep.equal([7000, 7000])
 })
 
 it('splits specs based on timings, single result', () => {
@@ -65,7 +66,7 @@ it('splits specs based on timings, single result', () => {
       duration: 1000,
     },
   ]
-  const chunks = splitByDuration(4, list)
+  const { chunks, sums } = splitByDuration(4, list)
   expect(chunks).to.deep.equal([
     [
       {
@@ -93,4 +94,5 @@ it('splits specs based on timings, single result', () => {
       },
     ],
   ])
+  expect(sums, 'duration sums').to.deep.equal([6000, 6000, 1000, 1000])
 })

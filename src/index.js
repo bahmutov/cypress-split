@@ -6,6 +6,7 @@ const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const cTable = require('console.table')
 const { getChunk } = require('./chunk')
+const { splitByDuration } = require('./timings')
 const { getEnvironmentFlag } = require('./utils')
 const path = require('path')
 const os = require('os')
@@ -68,6 +69,7 @@ function cypressSplit(on, config) {
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
+  let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
 
   // some CI systems like TeamCity provide agent index starting with 1
   // let's check for SPLIT_INDEX1 and if it is set,
@@ -84,6 +86,7 @@ function cypressSplit(on, config) {
 
   // potentially a list of files to run / split
   let SPEC = process.env.SPEC || config.env.spec || config.env.SPEC
+  /** @type {string[]|undefined} absolute spec filenames */
   let specs
   if (typeof SPEC === 'string' && SPEC) {
     specs = SPEC.split(',')
@@ -146,12 +149,52 @@ function cypressSplit(on, config) {
 
     debug('get chunk %o', { specs, splitN, splitIndex })
     /** @type {string[]} absolute spec filenames */
-    const splitSpecs = getChunk(specs, splitN, splitIndex)
-    debug('split specs')
-    debug(splitSpecs)
+    let splitSpecs
 
     const cwd = process.cwd()
     console.log('spec from the current directory %s', cwd)
+
+    if (SPLIT_FILE) {
+      debug('loading split file %s', SPLIT_FILE)
+      const splitFile = JSON.parse(fs.readFileSync(SPLIT_FILE, 'utf8'))
+      const previousDurations = splitFile.durations
+      const averageDuration =
+        previousDurations
+          .map((item) => item.duration)
+          .reduce((sum, duration) => (sum += duration), 0) /
+        previousDurations.length
+      const specsWithDurations = specs.map((specName) => {
+        const relativeSpec = path.relative(cwd, specName)
+        const foundInfo = previousDurations.find(
+          (item) => item.spec === relativeSpec,
+        )
+        if (!foundInfo) {
+          return {
+            specName,
+            duration: averageDuration,
+          }
+        } else {
+          return {
+            specName,
+            duration: foundInfo.duration,
+          }
+        }
+      })
+      debug('splitting by duration %d ways', splitN)
+      debug(specsWithDurations)
+      const { chunks, sums } = splitByDuration(splitN, specsWithDurations)
+      debug('split by duration')
+      debug(chunks)
+      debug('sums of durations for chunks')
+      debug(sums)
+
+      splitSpecs = chunks[splitIndex].map((item) => item.specName)
+    } else {
+      splitSpecs = getChunk(specs, splitN, splitIndex)
+    }
+    debug('split specs')
+    debug(splitSpecs)
+
     const nameRows = splitSpecs.map((specName, k) => {
       const row = [String(k + 1), path.relative(cwd, specName)]
       return row
