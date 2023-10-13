@@ -272,7 +272,7 @@ function cypressSplit(on, config) {
         const timingsString = JSON.stringify(timings, null, 2)
         if (!fs.existsSync(SPLIT_FILE)) {
           console.log('%s writing out timings file %s', label, SPLIT_FILE)
-          fs.writeFileSync(SPLIT_FILE, timingsString, 'utf8')
+          fs.writeFileSync(SPLIT_FILE, timingsString + '\n', 'utf8')
         }
         console.log(timingsString)
       }
