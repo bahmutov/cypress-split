@@ -152,7 +152,7 @@ function cypressSplit(on, config) {
     let splitSpecs
 
     const cwd = process.cwd()
-    console.log('%s specs from the current directory %s', cwd, label)
+    console.log('%s specs from the current directory %s', label, cwd)
 
     if (SPLIT_FILE) {
       debug('loading split file %s', SPLIT_FILE)
@@ -198,6 +198,7 @@ function cypressSplit(on, config) {
         )
         console.log(
           '%s approximate total duration for current chunk is %s (plus Cypress overhead)',
+          label,
           humanizeDuration(sums[splitIndex]),
         )
       } catch (err) {
