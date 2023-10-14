@@ -6,7 +6,7 @@ const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const cTable = require('console.table')
 const { getChunk } = require('./chunk')
-const { splitByDuration } = require('./timings')
+const { splitByDuration, hasTimeDifferences } = require('./timings')
 const { getEnvironmentFlag } = require('./utils')
 const path = require('path')
 const os = require('os')
@@ -281,11 +281,25 @@ function cypressSplit(on, config) {
         }
 
         const timingsString = JSON.stringify(timings, null, 2)
+        console.log(timingsString)
+
         if (!fs.existsSync(SPLIT_FILE)) {
           console.log('%s writing out timings file %s', label, SPLIT_FILE)
           fs.writeFileSync(SPLIT_FILE, timingsString + '\n', 'utf8')
+        } else {
+          const splitFile = JSON.parse(fs.readFileSync(SPLIT_FILE, 'utf8'))
+          const hasUpdatedTimings = hasTimeDifferences(splitFile, timings, 0.1)
+          if (hasUpdatedTimings) {
+            console.log(
+              '%s writing out updated timings file %s',
+              label,
+              SPLIT_FILE,
+            )
+            fs.writeFileSync(SPLIT_FILE, timingsString + '\n', 'utf8')
+          } else {
+            console.log('%s spec timings unchanged', label)
+          }
         }
-        console.log(timingsString)
       }
 
       const shouldWriteSummary = getEnvironmentFlag('SPLIT_SUMMARY', true)
