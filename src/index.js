@@ -6,7 +6,11 @@ const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const cTable = require('console.table')
 const { getChunk } = require('./chunk')
-const { splitByDuration } = require('./timings')
+const {
+  splitByDuration,
+  hasTimeDifferences,
+  mergeTimings,
+} = require('./timings')
 const { getEnvironmentFlag } = require('./utils')
 const path = require('path')
 const os = require('os')
@@ -281,11 +285,35 @@ function cypressSplit(on, config) {
         }
 
         const timingsString = JSON.stringify(timings, null, 2)
+        console.log(timingsString)
+
         if (!fs.existsSync(SPLIT_FILE)) {
           console.log('%s writing out timings file %s', label, SPLIT_FILE)
           fs.writeFileSync(SPLIT_FILE, timingsString + '\n', 'utf8')
+        } else {
+          const splitFile = JSON.parse(fs.readFileSync(SPLIT_FILE, 'utf8'))
+          const hasUpdatedTimings = hasTimeDifferences(splitFile, timings, 0.1)
+          if (hasUpdatedTimings) {
+            // TODO: merge split file with new timings
+            // do not forget specs not present in the current run!
+            const mergedTimings = mergeTimings(splitFile, timings)
+            const mergedText = JSON.stringify(mergedTimings, null, 2)
+            console.log(
+              '%s writing out updated timings file %s',
+              label,
+              SPLIT_FILE,
+            )
+            debug('previous timings has %d entries', splitFile.durations.length)
+            debug('current timings has %d entries', timings.durations.length)
+            debug(
+              'merged timings has %d entries',
+              mergedTimings.durations.length,
+            )
+            fs.writeFileSync(SPLIT_FILE, mergedText + '\n', 'utf8')
+          } else {
+            console.log('%s spec timings unchanged', label)
+          }
         }
-        console.log(timingsString)
       }
 
       const shouldWriteSummary = getEnvironmentFlag('SPLIT_SUMMARY', true)

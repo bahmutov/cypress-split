@@ -26,4 +26,64 @@ function splitByDuration(n, list) {
   return { chunks: result, sums }
 }
 
-module.exports = { splitByDuration }
+/**
+ * Compares the original timings file contents with the new spec timings.
+ * Returns true if there are differences and the new timings should be saved.
+ * @param {object} originalTimingsJson JSON loaded from the timings file
+ * @param {object} newTimingsJson new spec timings
+ * @param {number} maxTimeDifference Max relative time difference for a spec 0 to 1
+ * @returns {boolean} if found differences
+ */
+function hasTimeDifferences(
+  originalTimingsJson,
+  newTimingsJson,
+  maxTimeDifference,
+) {
+  // first check if there are new specs
+  const originalSpecNames = originalTimingsJson.durations.map(
+    (item) => item.spec,
+  )
+  const newSpecNames = newTimingsJson.durations.map((item) => item.spec)
+  if (newSpecNames.some((specName) => !originalSpecNames.includes(specName))) {
+    // found new spec, must update the timings file
+    return true
+  }
+
+  return newTimingsJson.durations.some((item) => {
+    const prev = originalTimingsJson.durations.find(
+      (curr) => curr.spec === item.spec,
+    )
+    if (!prev) {
+      // should not happen, all specs should be there
+      return false
+    }
+    // guard against zero
+    const prevDuration = prev.duration || 1
+    const relativeChange =
+      Math.abs(prev.duration - item.duration) / prevDuration
+    return relativeChange > maxTimeDifference
+  })
+}
+
+/**
+ * Merge previous timings with possible new or changed timings
+ * into a new object to be saved.
+ * @param {object} prevTimings JSON loaded from the timings file
+ * @param {object} currTimings new spec timings
+ * @returns {object} Merged object to be saved to the timings file
+ */
+function mergeTimings(prevTimings, currTimings) {
+  const merged = structuredClone(prevTimings)
+  currTimings.durations.forEach((item) => {
+    const found = merged.durations.find((x) => x.spec === item.spec)
+    if (found) {
+      Object.assign(found, item)
+    } else {
+      merged.durations.push(item)
+    }
+  })
+  merged.durations.sort((a, b) => a.spec.localeCompare(b.spec))
+  return merged
+}
+
+module.exports = { splitByDuration, hasTimeDifferences, mergeTimings }
