@@ -65,4 +65,25 @@ function hasTimeDifferences(
   })
 }
 
-module.exports = { splitByDuration, hasTimeDifferences }
+/**
+ * Merge previous timings with possible new or changed timings
+ * into a new object to be saved.
+ * @param {object} prevTimings JSON loaded from the timings file
+ * @param {object} currTimings new spec timings
+ * @returns {object} Merged object to be saved to the timings file
+ */
+function mergeTimings(prevTimings, currTimings) {
+  const merged = structuredClone(prevTimings)
+  currTimings.durations.forEach((item) => {
+    const found = merged.durations.find((x) => x.spec === item.spec)
+    if (found) {
+      Object.assign(found, item)
+    } else {
+      merged.durations.push(item)
+    }
+  })
+  merged.durations.sort((a, b) => a.spec.localeCompare(b.spec))
+  return merged
+}
+
+module.exports = { splitByDuration, hasTimeDifferences, mergeTimings }

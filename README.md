@@ -262,7 +262,7 @@ $ npx cypress run --env split=3,splitFile=timings.json
 
 For specs not in the timings file, it will use average duration of the known specs. The timings file might not exist, in this case the specs are split by name. At the end of the run, the duration of all run specs is printed and can be saved into the timings JSON file. **Note:** you would need to combine the timings from different runners into a single JSON file yourself.
 
-If the timings file does not exist yet, the timings will be written into the file after the run finishes.
+If the timings file does not exist yet, the timings will be written into the file after the run finishes. If the file exists, and the new timings have new entries or the existing entries are off by more than 10% duration, the merged file is written back.
 
 ## CI summary
 
