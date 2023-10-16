@@ -58,7 +58,15 @@ function cypressSplit(on, config) {
 
   on('after:spec', (spec, results) => {
     // console.log(results, results)
-    debug('after:spec for %s %o', spec.relative, results.stats)
+
+    const passed = results.stats.failures === 0 && results.stats.passes > 0
+
+    if (passed) {
+      debug('after:spec for passed %s %o', spec.relative, results.stats)
+    } else {
+      debug('after:spec for %s %o', spec.relative, results.stats)
+    }
+
     // make sure there are no duplicate specs for some reason
     if (specResults[spec.absolute]) {
       console.error(
@@ -261,18 +269,25 @@ function cypressSplit(on, config) {
 
     on('after:run', () => {
       if (SPLIT_FILE) {
-        console.log('%s here are spec timings', label)
+        console.log('%s here are passing spec timings', label)
 
         const specDurations = splitSpecs
           .map((absoluteSpecPath, k) => {
             const relativeName = specAbsoluteToRelative[absoluteSpecPath]
             const specResult = specResults[absoluteSpecPath]
             if (specResult) {
-              return {
-                spec: relativeName,
-                duration:
-                  specResult.stats.duration ||
-                  specResult.stats.wallClockDuration,
+              const passsed =
+                specResult.stats.passes > 0 && specResult.stats.failures === 0
+              if (passsed) {
+                return {
+                  spec: relativeName,
+                  duration:
+                    specResult.stats.duration ||
+                    specResult.stats.wallClockDuration,
+                }
+              } else {
+                debug('spec %s has not passed, ignoring timing', relativeName)
+                return
               }
             } else {
               return

@@ -41,7 +41,7 @@
     "@actions/core": "^1.10.0",
     "console.table": "^0.10.0",
     "debug": "^4.3.4",
-    "find-cypress-specs": "1.36.2",
+    "find-cypress-specs": "1.36.3",
     "humanize-duration": "^3.28.0"
   },
   "devDependencies": {
