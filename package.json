@@ -3,8 +3,12 @@
   "version": "0.0.0-development",
   "description": "Split Cypress specs across parallel CI machines for speed",
   "main": "src/index.js",
+  "bin": {
+    "cypress-split-merge": "./bin/merge.js"
+  },
   "files": [
-    "src"
+    "src",
+    "bin"
   ],
   "types": "src/types.d.ts",
   "scripts": {
@@ -19,7 +23,8 @@
     "deps": "npm audit --report --omit dev",
     "subfolder": "DEBUG=cypress-split,find-cypress-specs SPLIT=2 SPLIT_INDEX=0 cypress run --config-file examples/my-app/tests/cypress.config.js",
     "timings": "DEBUG=cypress-split SPLIT=2 SPLIT_INDEX=0 SPLIT_FILE=timings.json cypress run",
-    "timings-no-file": "DEBUG=cypress-split SPLIT=1 SPLIT_INDEX=0 SPLIT_FILE=does-not-exist.json cypress run"
+    "timings-no-file": "DEBUG=cypress-split SPLIT=1 SPLIT_INDEX=0 SPLIT_FILE=does-not-exist.json cypress run",
+    "demo-merge": "node ./bin/merge --parent-folder examples/split-times --split-file timings.json --output out-timings.json"
   },
   "repository": {
     "type": "git",
@@ -39,9 +44,11 @@
   "homepage": "https://github.com/bahmutov/cypress-split#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
+    "arg": "^5.0.2",
     "console.table": "^0.10.0",
     "debug": "^4.3.4",
     "find-cypress-specs": "1.36.3",
+    "globby": "^11.1.0",
     "humanize-duration": "^3.28.0"
   },
   "devDependencies": {
