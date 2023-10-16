@@ -71,7 +71,8 @@ jobs:
       - name: Install dependencies 🧪
         uses: cypress-io/github-action@v5
         with:
-          install: false
+          runTests: false
+
       - name: Merge example timings ⛙
         run: npm run demo-merge
 
