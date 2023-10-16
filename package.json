@@ -23,7 +23,8 @@
     "deps": "npm audit --report --omit dev",
     "subfolder": "DEBUG=cypress-split,find-cypress-specs SPLIT=2 SPLIT_INDEX=0 cypress run --config-file examples/my-app/tests/cypress.config.js",
     "timings": "DEBUG=cypress-split SPLIT=2 SPLIT_INDEX=0 SPLIT_FILE=timings.json cypress run",
-    "timings-no-file": "DEBUG=cypress-split SPLIT=1 SPLIT_INDEX=0 SPLIT_FILE=does-not-exist.json cypress run"
+    "timings-no-file": "DEBUG=cypress-split SPLIT=1 SPLIT_INDEX=0 SPLIT_FILE=does-not-exist.json cypress run",
+    "demo-merge": "node ./bin/merge --parent-folder examples/split-times --split-file timings.json --output out-timings.json"
   },
   "repository": {
     "type": "git",

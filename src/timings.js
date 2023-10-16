@@ -86,4 +86,40 @@ function mergeTimings(prevTimings, currTimings) {
   return merged
 }
 
-module.exports = { splitByDuration, hasTimeDifferences, mergeTimings }
+/**
+ * Merged loaded timings from multiple files into a combined result.
+ * @param {object[]} timings Loaded timings
+ */
+function mergeSplitTimings(timings) {
+  // [spec relative name]: duration
+  const specResults = {}
+
+  timings.forEach((json) => {
+    json.durations.forEach((item) => {
+      if (!specResults[item.spec]) {
+        specResults[item.spec] = item.duration
+      } else {
+        console.warn('hmm, found duplicate timings for spec %s', item.spec)
+      }
+    })
+  })
+
+  const result = {
+    durations: [],
+  }
+  Object.keys(specResults).forEach((spec) => {
+    result.durations.push({
+      spec,
+      duration: specResults[spec],
+    })
+  })
+
+  return result
+}
+
+module.exports = {
+  splitByDuration,
+  hasTimeDifferences,
+  mergeTimings,
+  mergeSplitTimings,
+}

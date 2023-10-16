@@ -73,7 +73,7 @@ jobs:
         with:
           install: false
       - name: Merge example timings ⛙
-        run: node ./bin/merge.js --parent-folder examples/split-times --split-file timings.json
+        run: npm run demo-merge
 
   test-split:
     needs: prepare
