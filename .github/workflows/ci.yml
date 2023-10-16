@@ -62,6 +62,19 @@ jobs:
           SPLIT: 2
           SPLIT_INDEX: 0
 
+  test-merge-timings:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Install dependencies 🧪
+        uses: cypress-io/github-action@v5
+        with:
+          install: false
+      - name: Merge example timings ⛙
+        run: node ./bin/merge.js --parent-folder examples/split-times --split-file timings.json
+
   test-split:
     needs: prepare
     runs-on: ubuntu-22.04
@@ -197,6 +210,7 @@ jobs:
         test-index1,
         test-timings,
         test-timings-no-file,
+        test-merge-timings,
       ]
     runs-on: ubuntu-22.04
     steps:
