@@ -4,14 +4,13 @@
 const debug = require('debug')('cypress-split')
 const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
-const cTable = require('console.table')
 const { getChunk } = require('./chunk')
 const {
   splitByDuration,
   hasTimeDifferences,
   mergeTimings,
 } = require('./timings')
-const { getEnvironmentFlag } = require('./utils')
+const { getEnvironmentFlag, printSpecsList } = require('./utils')
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
@@ -213,23 +212,21 @@ function cypressSplit(on, config) {
           label,
           humanizeDuration(sums[splitIndex]),
         )
+
+        printSpecsListWithDurations(chunks[splitIndex])
       } catch (err) {
         console.error('%s Could not split specs by duration', label)
         console.error(err.message)
         console.error('%s splitting as is by name', label)
         splitSpecs = getChunk(specs, splitN, splitIndex)
+        printSpecsList(splitSpecs)
       }
     } else {
       splitSpecs = getChunk(specs, splitN, splitIndex)
+      printSpecsList(splitSpecs)
     }
     debug('split specs')
     debug(splitSpecs)
-
-    const nameRows = splitSpecs.map((specName, k) => {
-      const row = [String(k + 1), path.relative(cwd, specName)]
-      return row
-    })
-    console.log(cTable.getTable(['k', 'spec'], nameRows))
 
     const addSpecResults = () => {
       // at this point, the specAbsoluteToRelative object should be filled
