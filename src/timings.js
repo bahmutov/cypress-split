@@ -108,7 +108,7 @@ function mergeSplitTimings(timings, debug = noop) {
         specResults[item.spec] = item.duration
       } else {
         // pick the max spec duration
-        const maxDuration = Math.max(item.duration, specResult[item.spec])
+        const maxDuration = Math.max(item.duration, specResults[item.spec])
         specResults[item.spec] = maxDuration
       }
     })
