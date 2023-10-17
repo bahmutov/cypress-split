@@ -78,7 +78,9 @@ jobs:
         run: npm run demo-merge -- --set-gha-output merged
 
       - name: Show merged output
-        run: echo '${{ steps.merge.outputs.merged }}'
+        run: |
+          echo off
+          echo '${{ steps.merge.outputs.merged }}'
 
   test-split:
     needs: prepare

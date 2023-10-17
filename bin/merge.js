@@ -62,7 +62,7 @@ if (args['--output']) {
 
 if (args['--set-gha-output']) {
   console.log(
-    '%s setting timings as GHA output %s',
+    '%s setting timings as GHA output named "%s"',
     label,
     args['--set-gha-output'],
   )
