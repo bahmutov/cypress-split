@@ -86,13 +86,21 @@ function mergeTimings(prevTimings, currTimings) {
   return merged
 }
 
+const noop = () => {}
+
 /**
  * Merged loaded timings from multiple files into a combined result.
  * @param {object[]} timings Loaded timings
+ * @param {function} debug optional debug function
  */
-function mergeSplitTimings(timings) {
+function mergeSplitTimings(timings, debug = noop) {
   // [spec relative name]: duration
   const specResults = {}
+
+  debug('merging %d timings', timings.length)
+  timings.forEach((json, k) => {
+    debug('timings %k with %d entries', k + 1, json.durations.length)
+  })
 
   timings.forEach((json) => {
     json.durations.forEach((item) => {

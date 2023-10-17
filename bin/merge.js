@@ -48,8 +48,9 @@ const loadedTimings = files.map((filename) => {
 })
 debug('loaded %d timings from %d files', loadedTimings, files.length)
 
-const merged = mergeSplitTimings(loadedTimings)
+const merged = mergeSplitTimings(loadedTimings, debug)
 debug('merged timings has %d entries', merged.durations.length)
+debug(merged)
 
 const mergedText = JSON.stringify(merged, null, 2)
 if (args['--output']) {
