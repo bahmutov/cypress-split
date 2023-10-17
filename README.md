@@ -23,6 +23,7 @@
 - 📝 [Split React Native Web Component Tests For Free](https://glebbahmutov.com/blog/split-react-native-component-tests/)
 - 📝 [Full Code Coverage For Free](https://glebbahmutov.com/blog/full-cy-code-coverage/)
 - 📝 [Cypress GitHub Actions Slash Command](https://glebbahmutov.com/blog/cypress-slash-command/)
+- 📝 [Run Cypress Specs In Parallel For Free Using Spec Timings](https://glebbahmutov.com/blog/cypress-parallel-free-based-on-timings/)
 
 ## Install
 
