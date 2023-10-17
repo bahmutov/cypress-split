@@ -69,7 +69,7 @@ module.exports = (on, config) => {
   cypressSplit(on, config)
   // IMPORTANT: return the config object
   return config
-})
+}
 ```
 
 Now update your CI script:
