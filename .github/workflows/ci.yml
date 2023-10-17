@@ -74,7 +74,13 @@ jobs:
           runTests: false
 
       - name: Merge example timings ⛙
-        run: npm run demo-merge
+        id: merge
+        run: npm run demo-merge -- --set-gha-output merged
+
+      - name: Show merged output
+        run: |
+          echo off
+          echo '${{ steps.merge.outputs.merged }}'
 
   test-split:
     needs: prepare
