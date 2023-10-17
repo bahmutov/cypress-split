@@ -264,6 +264,20 @@ For specs not in the timings file, it will use average duration of the known spe
 
 If the timings file does not exist yet, the timings will be written into the file after the run finishes. If the file exists, and the new timings have new entries or the existing entries are off by more than 10% duration, the merged file is written back. Timing for specs without any passes tests or with failed tests is ignored.
 
+## Merging timings files
+
+This module includes a bin utility to merge multiple timings files into one. Example:
+
+```
+npx cypress-split-merge \
+  --parent-folder partials/ \
+  --split-file timings.json \
+  --output out-timings.json \
+  --set-gha-output merged-timing
+```
+
+The above command finds all `timings.json` file in the sub folders of `partials/` folder and merges them. It saved the result to `out-timings.json` file and if running on GitHub Actions sets the job output named `merged-timing` to a stringified single line JSON line.
+
 ## CI summary
 
 To skip GitHub Actions summary, set an environment variable `SPLIT_SUMMARY=false`. By default, this plugin generates the summary.

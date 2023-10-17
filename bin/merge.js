@@ -5,6 +5,7 @@ const debug = require('debug')('cypress-split')
 const globby = require('globby')
 const fs = require('fs')
 const { mergeSplitTimings } = require('../src/timings')
+const ghCore = require('@actions/core')
 
 const label = 'cypress-split-merge'
 
@@ -12,6 +13,7 @@ const args = arg({
   '--split-file': String,
   '--parent-folder': String,
   '--output': String, // output filename to write
+  '--set-gha-output': String, // output merged json string
   // aliases
   '-o': '--output',
 })
@@ -56,4 +58,13 @@ if (args['--output']) {
 } else {
   console.log('%s merged timings:', label)
   console.log(mergedText)
+}
+
+if (args['--set-gha-output']) {
+  console.log(
+    '%s setting timings as GHA output %s',
+    label,
+    args['--set-gha-output'],
+  )
+  ghCore.setOutput(args['--set-gha-output'], JSON.stringify(merged))
 }
