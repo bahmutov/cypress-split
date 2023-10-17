@@ -10,7 +10,11 @@ const {
   hasTimeDifferences,
   mergeTimings,
 } = require('./timings')
-const { getEnvironmentFlag, printSpecsList } = require('./utils')
+const {
+  getEnvironmentFlag,
+  printSpecsList,
+  printSpecsListWithDurations,
+} = require('./utils')
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
