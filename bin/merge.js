@@ -46,7 +46,11 @@ const loadedTimings = files.map((filename) => {
   const json = JSON.parse(fs.readFileSync(filename, 'utf8'))
   return json
 })
-debug('loaded %d timings from %d files', loadedTimings, files.length)
+debug(
+  'loaded %d timings lists from %d files',
+  loadedTimings.length,
+  files.length,
+)
 
 const merged = mergeSplitTimings(loadedTimings, debug)
 debug('merged timings has %d entries', merged.durations.length)

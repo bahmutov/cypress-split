@@ -99,7 +99,7 @@ function mergeSplitTimings(timings, debug = noop) {
 
   debug('merging %d timings', timings.length)
   timings.forEach((json, k) => {
-    debug('timings %k with %d entries', k + 1, json.durations.length)
+    debug('timings list %d with %d entries', k + 1, json.durations.length)
   })
 
   timings.forEach((json) => {
@@ -107,7 +107,9 @@ function mergeSplitTimings(timings, debug = noop) {
       if (!specResults[item.spec]) {
         specResults[item.spec] = item.duration
       } else {
-        console.warn('hmm, found duplicate timings for spec %s', item.spec)
+        // pick the max spec duration
+        const maxDuration = Math.max(item.duration, specResult[item.spec])
+        specResults[item.spec] = maxDuration
       }
     })
   })
