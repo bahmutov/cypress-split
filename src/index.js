@@ -236,7 +236,7 @@ function cypressSplit(on, config) {
       // at this point, the specAbsoluteToRelative object should be filled
       const specRows = splitSpecs.map((absoluteSpecPath, k) => {
         const relativeName = specAbsoluteToRelative[absoluteSpecPath]
-        const specRow = [String(k + 1), relativeName]
+        const specRow = [String(k + 1), relativeName || absoluteSpecPath]
 
         const specResult = specResults[absoluteSpecPath]
         if (specResult) {
