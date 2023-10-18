@@ -70,16 +70,19 @@ function cypressSplit(on, config) {
       debug('after:spec for %s %o', spec.relative, results.stats)
     }
 
+    const cwd = process.cwd()
+    const absoluteSpecPath = spec.absolute || path.join(cwd, spec.relative)
+
     // make sure there are no duplicate specs for some reason
-    if (specResults[spec.absolute]) {
+    if (specResults[absoluteSpecPath]) {
       console.error(
         'Warning: cypress-split found duplicate test results for %s',
-        spec.absolute,
+        absoluteSpecPath,
       )
     }
 
-    specResults[spec.absolute] = results
-    specAbsoluteToRelative[spec.absolute] = spec.relative
+    specResults[absoluteSpecPath] = results
+    specAbsoluteToRelative[absoluteSpecPath] = spec.relative
   })
 
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
