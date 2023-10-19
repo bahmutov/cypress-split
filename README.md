@@ -403,6 +403,18 @@ To see diagnostic log messages from this plugin, set the environment variable `D
 DEBUG=cypress-split,find-cypress-specs npx cypress run
 ```
 
+for example, if using GitHub Actions:
+
+```yml
+- name: Run split Cypress tests 🧪
+  uses: cypress-io/github-action@v5
+  # pass the machine index and the total number
+  env:
+    SPLIT: ${{ strategy.job-total }}
+    SPLIT_INDEX: ${{ strategy.job-index }}
+    DEBUG: 'cypress-split,find-cypress-specs'
+```
+
 If you notice that the plugin is not working as expected, and you are registering multiple Cypress plugins, you might be experiencing Cypress issue [#22428](https://github.com/cypress-io/cypress/issues/22428). Use [cypress-on-fix](https://github.com/bahmutov/cypress-on-fix) to register the plugins:
 
 ```js
