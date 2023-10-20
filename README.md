@@ -11,6 +11,7 @@
   - [Lesson m3: Run specs in parallel on GitLab CI](https://cypress.tips/courses/cypress-plugins/lessons/m3)
   - [Lesson m4: Very simple GitHub Actions setup with reusable workflow](https://cypress.tips/courses/cypress-plugins/lessons/m4)
   - [Lesson m5: Split tests on BitBucket pipeline](https://cypress.tips/courses/cypress-plugins/lessons/m5)
+  - [Lesson m6: Split tests on Azure DevOps](https://cypress.tips/courses/cypress-plugins/lessons/m6)
 - 🎓 Covered in my course [Testing The Swag Store](https://cypress.tips/courses/swag-store)
   - [Lesson 65: Speed up CI by splitting the specs](https://cypress.tips/courses/swag-store/lessons/lesson65)
   - [Bonus 29: Combine the code coverage from split E2E test jobs](https://cypress.tips/courses/swag-store/lessons/bonus29)
