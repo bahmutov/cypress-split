@@ -48,7 +48,7 @@
     "console.table": "^0.10.0",
     "debug": "^4.3.4",
     "find-cypress-specs": "1.37.0",
-    "globby": "^11.1.0",
+    "globby": "^13.0.0",
     "humanize-duration": "^3.28.0"
   },
   "devDependencies": {
