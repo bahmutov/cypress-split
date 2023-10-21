@@ -190,12 +190,12 @@ function cypressSplit(on, config) {
           if (!foundInfo) {
             return {
               specName,
-              duration: averageDuration,
+              duration: Math.round(averageDuration),
             }
           } else {
             return {
               specName,
-              duration: foundInfo.duration,
+              duration: Math.round(foundInfo.duration),
             }
           }
         })
@@ -217,7 +217,7 @@ function cypressSplit(on, config) {
         console.log(
           '%s approximate total duration for current chunk is %s (plus Cypress overhead)',
           label,
-          humanizeDuration(sums[splitIndex]),
+          humanizeDuration(Math.round(sums[splitIndex])),
         )
 
         printSpecsListWithDurations(chunks[splitIndex])
@@ -247,8 +247,9 @@ function cypressSplit(on, config) {
           debug('spec results for %s', relativeName)
           debug(specResult.stats)
           // the duration field depends on the Cypress version
-          const specDuration =
-            specResult.stats.duration || specResult.stats.wallClockDuration
+          const specDuration = Math.round(
+            specResult.stats.duration || specResult.stats.wallClockDuration,
+          )
           const humanSpecDuration = humanizeDuration(specDuration)
           debug(
             'spec took %d ms, human duration %s',
@@ -283,11 +284,13 @@ function cypressSplit(on, config) {
               const passsed =
                 specResult.stats.passes > 0 && specResult.stats.failures === 0
               if (passsed) {
+                const duration = Math.round(
+                  specResult.stats.duration ||
+                    specResult.stats.wallClockDuration,
+                )
                 return {
                   spec: relativeName,
-                  duration:
-                    specResult.stats.duration ||
-                    specResult.stats.wallClockDuration,
+                  duration,
                 }
               } else {
                 debug('spec %s has not passed, ignoring timing', relativeName)
