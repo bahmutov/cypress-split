@@ -1,3 +1,9 @@
+if (typeof structuredClone === 'undefined') {
+  // older versions of Node might not have "structuredClone"
+  // so use a simply polyfill
+  structuredClone = (x) => JSON.parse(JSON.stringify(x))
+}
+
 /**
  * Split the list of items into "n" lists by "duration" property
  * in each item. Sorts the list first, then round-robin fills
