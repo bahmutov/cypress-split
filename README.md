@@ -268,6 +268,8 @@ If the timings file does not exist yet, the timings will be written into the fil
 
 See example [bahmutov/cypress-split-timings-example](https://github.com/bahmutov/cypress-split-timings-example).
 
+**Note 2:** during Cypress execution, the working directory is set to the folder with the Cypress config file. This module tries its best to find the split file by searching the parent folders to the Git repo or root folder.
+
 ## Merging timings files
 
 This module includes a bin utility to merge multiple timings files into one. Example:
