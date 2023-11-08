@@ -5,6 +5,7 @@ const debug = require('debug')('cypress-split')
 const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const { getChunk } = require('./chunk')
+const { findFile } = require('./find-file')
 const {
   splitByDuration,
   hasTimeDifferences,
@@ -172,10 +173,17 @@ function cypressSplit(on, config) {
     const cwd = process.cwd()
     console.log('%s specs from the current directory %s', label, cwd)
 
+    let foundSplitFile
     if (SPLIT_FILE) {
       debug('loading split file %s', SPLIT_FILE)
       try {
-        const splitFile = JSON.parse(fs.readFileSync(SPLIT_FILE, 'utf8'))
+        foundSplitFile = findFile(SPLIT_FILE)
+        if (!foundSplitFile) {
+          throw new Error(
+            `Could not find ${SPLIT_FILE} based on the current working directory ${cwd}`,
+          )
+        }
+        const splitFile = JSON.parse(fs.readFileSync(foundSplitFile, 'utf8'))
         const previousDurations = splitFile.durations
         const averageDuration =
           previousDurations
@@ -309,11 +317,11 @@ function cypressSplit(on, config) {
         const timingsString = JSON.stringify(timings, null, 2)
         console.log(timingsString)
 
-        if (!fs.existsSync(SPLIT_FILE)) {
+        if (!foundSplitFile) {
           console.log('%s writing out timings file %s', label, SPLIT_FILE)
           fs.writeFileSync(SPLIT_FILE, timingsString + '\n', 'utf8')
         } else {
-          const splitFile = JSON.parse(fs.readFileSync(SPLIT_FILE, 'utf8'))
+          const splitFile = JSON.parse(fs.readFileSync(foundSplitFile, 'utf8'))
           const hasUpdatedTimings = hasTimeDifferences(splitFile, timings, 0.1)
           if (hasUpdatedTimings) {
             // TODO: merge split file with new timings
@@ -328,10 +336,11 @@ function cypressSplit(on, config) {
             debug('previous timings has %d entries', splitFile.durations.length)
             debug('current timings has %d entries', timings.durations.length)
             debug(
-              'merged timings has %d entries',
+              'merged timings has %d entries written to %s',
               mergedTimings.durations.length,
+              foundSplitFile,
             )
-            fs.writeFileSync(SPLIT_FILE, mergedText + '\n', 'utf8')
+            fs.writeFileSync(foundSplitFile, mergedText + '\n', 'utf8')
           } else {
             console.log('%s spec timings unchanged', label)
           }

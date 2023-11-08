@@ -173,6 +173,23 @@ jobs:
         with:
           command: npm run timings-no-file
 
+  test-find-timings-file:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+      - name: Needs to find the timings file 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          project: examples/timings-file/tests/cypress-tests
+        env:
+          SPLIT: 1
+          SPLIT_INDEX: 0
+          # the timings file is not next to the config file
+          # but in the project folder
+          SPLIT_FILE: timings.json
+
   test-workflow-e2e:
     # https://github.com/bahmutov/cypress-workflows
     uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
@@ -220,6 +237,7 @@ jobs:
         test-timings,
         test-timings-no-file,
         test-merge-timings,
+        test-find-timings-file,
       ]
     runs-on: ubuntu-22.04
     steps:
