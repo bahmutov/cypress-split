@@ -6,6 +6,7 @@ module.exports = defineConfig({
     // baseUrl, etc
     supportFile: false,
     fixturesFolder: false,
+    specPattern: 'e2e/*.cy.js',
     setupNodeEvents(on, config) {
       console.log('cwd is', process.cwd())
       cypressSplit(on, config)
