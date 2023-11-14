@@ -113,8 +113,8 @@ function mergeSplitTimings(timings, debug = noop) {
       if (!specResults[item.spec]) {
         specResults[item.spec] = item.duration
       } else {
-        // pick the max spec duration
-        const maxDuration = Math.max(item.duration, specResults[item.spec])
+        // average the durations
+        const maxDuration = (item.duration + specResults[item.spec]) / 2
         specResults[item.spec] = maxDuration
       }
     })
