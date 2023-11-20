@@ -89,10 +89,10 @@ function cypressSplit(on, config) {
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
   let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
-  let OUTPUT_FILE = process.env.OUTPUT_FILE || config.env.outputFile || SPLIT_FILE
+  let SPLIT_OUTPUT_FILE = process.env.SPLIT_OUTPUT_FILE || config.env.outputFile || SPLIT_FILE
 
   console.log('Timings are read from %s', SPLIT_FILE)
-  console.log('Timings will be written to %s', OUTPUT_FILE)
+  console.log('Timings will be written to %s', SPLIT_OUTPUT_FILE)
 
   // some CI systems like TeamCity provide agent index starting with 1
   // let's check for SPLIT_INDEX1 and if it is set,
@@ -322,8 +322,8 @@ function cypressSplit(on, config) {
         console.log(timingsString)
 
         if (!foundSplitFile) {
-          console.log('%s writing out timings file %s', label, OUTPUT_FILE)
-          fs.writeFileSync(OUTPUT_FILE, timingsString + '\n', 'utf8')
+          console.log('%s writing out timings file %s', label, SPLIT_OUTPUT_FILE)
+          fs.writeFileSync(SPLIT_OUTPUT_FILE, timingsString + '\n', 'utf8')
         } else {
           const splitFile = JSON.parse(fs.readFileSync(foundSplitFile, 'utf8'))
           const hasUpdatedTimings = hasTimeDifferences(splitFile, timings, 0.1)
@@ -335,21 +335,21 @@ function cypressSplit(on, config) {
             console.log(
               '%s writing out updated timings file %s',
               label,
-              OUTPUT_FILE,
+              SPLIT_OUTPUT_FILE,
             )
             debug('previous timings has %d entries', splitFile.durations.length)
             debug('current timings has %d entries', timings.durations.length)
             debug(
               'merged timings has %d entries written to %s',
               mergedTimings.durations.length,
-              OUTPUT_FILE,
+              SPLIT_OUTPUT_FILE,
             )
-            fs.writeFileSync(OUTPUT_FILE, mergedText + '\n', 'utf8')
+            fs.writeFileSync(SPLIT_OUTPUT_FILE, mergedText + '\n', 'utf8')
           } else {
             console.log('%s spec timings unchanged', label)
-            if(OUTPUT_FILE !== SPLIT_FILE){
-              console.log('%s writing out timings file %s', label, OUTPUT_FILE)
-              fs.writeFileSync(OUTPUT_FILE, timingsString + '\n', 'utf8')
+            if(SPLIT_OUTPUT_FILE !== SPLIT_FILE){
+              console.log('%s writing out timings file %s', label, SPLIT_OUTPUT_FILE)
+              fs.writeFileSync(SPLIT_OUTPUT_FILE, timingsString + '\n', 'utf8')
             }
           }
         }
