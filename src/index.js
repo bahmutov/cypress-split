@@ -91,8 +91,8 @@ function cypressSplit(on, config) {
   let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
   let SPLIT_OUTPUT_FILE = process.env.SPLIT_OUTPUT_FILE || config.env.outputFile || SPLIT_FILE
 
-  console.log('Timings are read from %s', SPLIT_FILE)
-  console.log('Timings will be written to %s', SPLIT_OUTPUT_FILE)
+  console.log('cypress:split: Timings are read from %s', SPLIT_FILE)
+  console.log('cypress:split: Timings will be written to %s', SPLIT_OUTPUT_FILE)
 
   // some CI systems like TeamCity provide agent index starting with 1
   // let's check for SPLIT_INDEX1 and if it is set,
