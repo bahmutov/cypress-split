@@ -11,5 +11,6 @@
   "prHourlyLimit": 2,
   "schedule": ["after 10pm and before 5am on every weekday", "every weekend"],
   "masterIssue": true,
-  "labels": ["type: dependencies", "renovate"]
+  "labels": ["type: dependencies", "renovate"],
+  "ignoreDeps": ["globby", "cypress-io/cypress"]
 }
