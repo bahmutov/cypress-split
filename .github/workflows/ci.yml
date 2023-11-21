@@ -162,12 +162,25 @@ jobs:
         with:
           command: npm run timings
 
+  test-timings-split-output-file:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+      - name: Split specs based on timings json file 🧪, write output to different file 🗃️
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run timings-split-output-file
+      - name: Show split output file
+        run: cat new-timings.json
+
   test-timings-no-file:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v4
-      - name: Split specs based on non-existen timings json file 🧪
+      - name: Split specs based on non-existent timings json file 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
         with:
