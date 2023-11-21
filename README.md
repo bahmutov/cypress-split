@@ -271,7 +271,11 @@ $ npx cypress run --env split=3,splitFile=timings.json
 
 For specs not in the timings file, it will use average duration of the known specs. The timings file might not exist, in this case the specs are split by name. At the end of the run, the duration of all run specs is printed and can be saved into the timings JSON file. **Note:** you would need to combine the timings from different runners into a single JSON file yourself.
 
-If the timings file does not exist yet, the timings will be written into the file after the run finishes. If the file exists, and the new timings have new entries or the existing entries are off by more than 10% duration, the merged file is written back. Timing for specs without any passes tests or with failed tests is ignored.
+If the timings file does not exist yet, the timings will be written into the file after the run finishes. If the file exists, and the new timings have new entries or the existing entries are off by more than 10% duration, the merged file is written back. Timing for specs without any passes tests or with failed tests is ignored. You can control the threshold to avoid changing the timings file if the times are too close. For example, to only update the timings file if any duration is different by 20% you can use the environment variable `SPLIT_TIME_THRESHOLD`
+
+```
+$ SPLIT_TIME_THRESHOLD=0.2 SPLIT_FILE=... npx cypress run ...
+```
 
 See example [bahmutov/cypress-split-timings-example](https://github.com/bahmutov/cypress-split-timings-example).
 

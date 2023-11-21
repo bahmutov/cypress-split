@@ -89,10 +89,11 @@ function cypressSplit(on, config) {
   let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
   let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
-  let SPLIT_OUTPUT_FILE = process.env.SPLIT_OUTPUT_FILE || config.env.outputFile || SPLIT_FILE
+  let SPLIT_OUTPUT_FILE =
+    process.env.SPLIT_OUTPUT_FILE || config.env.outputFile || SPLIT_FILE
 
-  console.log('cypress:split: Timings are read from %s', SPLIT_FILE)
-  console.log('cypress:split: Timings will be written to %s', SPLIT_OUTPUT_FILE)
+  console.log('%s Timings are read from %s', label, SPLIT_FILE)
+  console.log('%s Timings will be written to %s', label, SPLIT_OUTPUT_FILE)
 
   // some CI systems like TeamCity provide agent index starting with 1
   // let's check for SPLIT_INDEX1 and if it is set,
@@ -322,11 +323,31 @@ function cypressSplit(on, config) {
         console.log(timingsString)
 
         if (!foundSplitFile) {
-          console.log('%s writing out timings file %s', label, SPLIT_OUTPUT_FILE)
+          console.log(
+            '%s writing out timings file %s',
+            label,
+            SPLIT_OUTPUT_FILE,
+          )
           fs.writeFileSync(SPLIT_OUTPUT_FILE, timingsString + '\n', 'utf8')
         } else {
           const splitFile = JSON.parse(fs.readFileSync(foundSplitFile, 'utf8'))
-          const hasUpdatedTimings = hasTimeDifferences(splitFile, timings, 0.1)
+          let splitThreshold = 0.1
+          if (
+            'SPLIT_TIME_THRESHOLD' in process.env &&
+            process.env.SPLIT_TIME_THRESHOLD
+          ) {
+            debug(
+              'will use SPLIT_TIME_THRESHOLD value %s',
+              process.env.SPLIT_TIME_THRESHOLD,
+            )
+            splitThreshold = parseFloat(process.env.SPLIT_TIME_THRESHOLD)
+            debug('parsed SPLIT_TIME_THRESHOLD is %d', splitThreshold)
+          }
+          const hasUpdatedTimings = hasTimeDifferences(
+            splitFile,
+            timings,
+            splitThreshold,
+          )
           if (hasUpdatedTimings) {
             // TODO: merge split file with new timings
             // do not forget specs not present in the current run!
@@ -347,8 +368,12 @@ function cypressSplit(on, config) {
             fs.writeFileSync(SPLIT_OUTPUT_FILE, mergedText + '\n', 'utf8')
           } else {
             console.log('%s spec timings unchanged', label)
-            if(SPLIT_OUTPUT_FILE !== SPLIT_FILE){
-              console.log('%s writing out timings file %s', label, SPLIT_OUTPUT_FILE)
+            if (SPLIT_OUTPUT_FILE !== SPLIT_FILE) {
+              console.log(
+                '%s writing out timings file %s',
+                label,
+                SPLIT_OUTPUT_FILE,
+              )
               fs.writeFileSync(SPLIT_OUTPUT_FILE, timingsString + '\n', 'utf8')
             }
           }
