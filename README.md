@@ -33,6 +33,10 @@
 - 📝 [Cypress GitHub Actions Slash Command](https://glebbahmutov.com/blog/cypress-slash-command/)
 - 📝 [Run Cypress Specs In Parallel For Free Using Spec Timings](https://glebbahmutov.com/blog/cypress-parallel-free-based-on-timings/)
 
+## Videos
+
+- 📺 Watch presentation [Fast Testing Using Cypress For Free 💸💸💸](https://youtu.be/1idlr9IE0oU) and see its [slides](https://slides.com/bahmutov/fast-testing-using-cypress-for-free)
+
 ## Install
 
 Add this plugin as a dev dependency and include in your Cypress config file.
