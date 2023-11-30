@@ -131,7 +131,7 @@ strategy:
     containers: [1, 2, 3]
 steps:
   - name: Run split Cypress tests 🧪
-    uses: cypress-io/github-action@v5
+    uses: cypress-io/github-action@v6
     # pass the machine index and the total number
     env:
       SPLIT: ${{ strategy.job-total }}
@@ -439,7 +439,7 @@ for example, if using GitHub Actions:
 
 ```yml
 - name: Run split Cypress tests 🧪
-  uses: cypress-io/github-action@v5
+  uses: cypress-io/github-action@v6
   # pass the machine index and the total number
   env:
     SPLIT: ${{ strategy.job-total }}
