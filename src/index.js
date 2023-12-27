@@ -90,7 +90,7 @@ function cypressSplit(on, config) {
   let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
   let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
   let SPLIT_OUTPUT_FILE =
-    process.env.SPLIT_OUTPUT_FILE || config.env.outputFile || SPLIT_FILE
+    process.env.SPLIT_OUTPUT_FILE || config.env.splitOutputFile || SPLIT_FILE
 
   console.log('%s Timings are read from %s', label, SPLIT_FILE)
   console.log('%s Timings will be written to %s', label, SPLIT_OUTPUT_FILE)
