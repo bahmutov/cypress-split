@@ -308,7 +308,7 @@ You can also indicate where the plugin should output the timings, by setting the
 $ SPLIT_FILE=timings.json SPLIT_OUTPUT_FILE=output.json npx cypress run
 
 # Or use the Cypress --env option
-$ npx cypress run --env splitFile=timings.json,outputFile=output.json
+$ npx cypress run --env splitFile=timings.json,splitOutputFile=output.json
 ```
 
 ## CI summary
