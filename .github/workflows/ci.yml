@@ -84,6 +84,26 @@ jobs:
           echo off
           echo '${{ steps.merge.outputs.merged }}'
 
+  preview:
+    needs: prepare
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Preview the split 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run demo-preview
+
+      - name: Preview the split with timings 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          install: false
+          command: npm run demo-preview -- --split-file ./timings.json
+
   test-split:
     needs: prepare
     runs-on: ubuntu-22.04
@@ -251,6 +271,7 @@ jobs:
         test-timings-no-file,
         test-merge-timings,
         test-find-timings-file,
+        preview,
       ]
     runs-on: ubuntu-22.04
     steps:

@@ -2,20 +2,11 @@
 // @ts-check
 
 const debug = require('debug')('cypress-split')
-const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
-const { getChunk } = require('./chunk')
-const { findFile } = require('./find-file')
-const {
-  splitByDuration,
-  hasTimeDifferences,
-  mergeTimings,
-} = require('./timings')
-const {
-  getEnvironmentFlag,
-  printSpecsList,
-  printSpecsListWithDurations,
-} = require('./utils')
+
+const { parseSplitInputs, getSpecsToSplit } = require('./parse-inputs')
+const { hasTimeDifferences, mergeTimings } = require('./timings')
+const { getEnvironmentFlag, splitSpecsLogic } = require('./utils')
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
@@ -86,88 +77,28 @@ function cypressSplit(on, config) {
     specAbsoluteToRelative[absoluteSpecPath] = spec.relative
   })
 
-  let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
-  let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
-  let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
-  let SPLIT_OUTPUT_FILE =
-    process.env.SPLIT_OUTPUT_FILE || config.env.splitOutputFile || SPLIT_FILE
+  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, ciName } =
+    parseSplitInputs(process.env, config.env)
 
-  console.log('%s Timings are read from %s', label, SPLIT_FILE)
-  console.log('%s Timings will be written to %s', label, SPLIT_OUTPUT_FILE)
-
-  // some CI systems like TeamCity provide agent index starting with 1
-  // let's check for SPLIT_INDEX1 and if it is set,
-  // use it instead of zero-based SPLIT_INDEX
-  debug('split index 1 possible values', {
-    SPLIT_INDEX1: process.env.SPLIT_INDEX1,
-    splitIndex1: config.env.splitIndex1,
-  })
-  if (process.env.SPLIT_INDEX1 || config.env.splitIndex1) {
-    const indexOne = process.env.SPLIT_INDEX1 || config.env.splitIndex1
-    SPLIT_INDEX = Number(indexOne) - 1
-    debug(
-      'set SPLIT_INDEX to %d from index starting with 1 "%s"',
-      SPLIT_INDEX,
-      indexOne,
-    )
+  if (SPLIT_FILE) {
+    console.log('%s Timings are read from %s', label, SPLIT_FILE)
+  }
+  if (SPLIT_OUTPUT_FILE) {
+    console.log('%s Timings will be written to %s', label, SPLIT_OUTPUT_FILE)
   }
 
-  // potentially a list of files to run / split
-  let SPEC = process.env.SPEC || config.env.spec || config.env.SPEC
-  /** @type {string[]|undefined} absolute spec filenames */
-  let specs
-  if (typeof SPEC === 'string' && SPEC) {
-    specs = SPEC.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map((specFilename) => {
-        // make sure every spec filename is absolute
-        return path.resolve(specFilename)
-      })
+  if (ciName) {
     console.log(
-      '%s have explicit %d spec %s',
+      '%s detected %s machine %d of %d',
       label,
-      specs.length,
-      specs.length === 1 ? 'file' : 'files',
+      ciName,
+      SPLIT_INDEX,
+      SPLIT,
     )
-  }
-
-  if (SPLIT === 'true' || SPLIT === true) {
-    // the user wants us to determine the machine index
-    // and the total number of machines, which is possible for some CI systems
-    if (process.env.CIRCLECI) {
-      SPLIT = process.env.CIRCLE_NODE_TOTAL
-      SPLIT_INDEX = process.env.CIRCLE_NODE_INDEX
-      console.log(
-        '%s detected CircleCI machine %d of %d',
-        label,
-        SPLIT_INDEX,
-        SPLIT,
-      )
-    } else if (process.env.CI_NODE_INDEX && process.env.CI_NODE_TOTAL) {
-      // GitLab CI
-      // https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-      SPLIT = process.env.CI_NODE_TOTAL
-      // GitLabCI index starts with 1
-      // convert it to zero base
-      SPLIT_INDEX = Number(process.env.CI_NODE_INDEX) - 1
-      console.log(
-        '%s detected GitLabCI machine %d of %d',
-        label,
-        SPLIT_INDEX,
-        SPLIT,
-      )
-    } else {
-      throw new Error('Do not know how to determine the correct split')
-    }
   }
 
   if (isDefined(SPLIT) && isDefined(SPLIT_INDEX)) {
-    if (!specs) {
-      const returnAbsolute = true
-      // @ts-ignore
-      specs = getSpecs(config, undefined, returnAbsolute)
-    }
+    const specs = getSpecsToSplit(process.env, config)
 
     console.log('%s there are %d found specs', label, specs.length)
     // console.log(specs)
@@ -176,79 +107,87 @@ function cypressSplit(on, config) {
     console.log('%s chunk %d of %d', label, splitIndex + 1, splitN)
 
     debug('get chunk %o', { specs, splitN, splitIndex })
-    /** @type {string[]} absolute spec filenames */
-    let splitSpecs
+    /* @type {string[]} absolute spec filenames */
+    // let splitSpecs
 
-    const cwd = process.cwd()
-    console.log('%s specs from the current directory %s', label, cwd)
+    // const cwd = process.cwd()
+    // console.log('%s specs from the current directory %s', label, cwd)
 
-    let foundSplitFile
-    if (SPLIT_FILE) {
-      debug('loading split file %s', SPLIT_FILE)
-      try {
-        foundSplitFile = findFile(SPLIT_FILE)
-        if (!foundSplitFile) {
-          throw new Error(
-            `Could not find ${SPLIT_FILE} based on the current working directory ${cwd}`,
-          )
-        }
-        const splitFile = JSON.parse(fs.readFileSync(foundSplitFile, 'utf8'))
-        const previousDurations = splitFile.durations
-        const averageDuration =
-          previousDurations
-            .map((item) => item.duration)
-            .reduce((sum, duration) => (sum += duration), 0) /
-          previousDurations.length
-        const specsWithDurations = specs.map((specName) => {
-          const relativeSpec = path.relative(cwd, specName)
-          const foundInfo = previousDurations.find(
-            (item) => item.spec === relativeSpec,
-          )
-          if (!foundInfo) {
-            return {
-              specName,
-              duration: Math.round(averageDuration),
-            }
-          } else {
-            return {
-              specName,
-              duration: Math.round(foundInfo.duration),
-            }
-          }
-        })
-        debug('splitting by duration %d ways', splitN)
-        debug(specsWithDurations)
-        const { chunks, sums } = splitByDuration(splitN, specsWithDurations)
-        debug('split by duration')
-        debug(chunks)
-        debug('sums of durations for chunks')
-        debug(sums)
+    const { splitSpecs, foundSplitFile } = splitSpecsLogic({
+      specs,
+      splitN,
+      splitIndex,
+      splitFileName: SPLIT_FILE,
+      label,
+    })
 
-        splitSpecs = chunks[splitIndex].map((item) => item.specName)
-        console.log(
-          '%s split %d specs using durations from %s file',
-          label,
-          specsWithDurations.length,
-          SPLIT_FILE,
-        )
-        console.log(
-          '%s approximate total duration for current chunk is %s (plus Cypress overhead)',
-          label,
-          humanizeDuration(Math.round(sums[splitIndex])),
-        )
+    // let foundSplitFile
+    // if (SPLIT_FILE) {
+    //   debug('loading split file %s', SPLIT_FILE)
+    //   try {
+    //     foundSplitFile = findFile(SPLIT_FILE)
+    //     if (!foundSplitFile) {
+    //       throw new Error(
+    //         `Could not find ${SPLIT_FILE} based on the current working directory ${cwd}`,
+    //       )
+    //     }
+    //     const splitFile = JSON.parse(fs.readFileSync(foundSplitFile, 'utf8'))
+    //     const previousDurations = splitFile.durations
+    //     const averageDuration =
+    //       previousDurations
+    //         .map((item) => item.duration)
+    //         .reduce((sum, duration) => (sum += duration), 0) /
+    //       previousDurations.length
+    //     const specsWithDurations = specs.map((specName) => {
+    //       const relativeSpec = path.relative(cwd, specName)
+    //       const foundInfo = previousDurations.find(
+    //         (item) => item.spec === relativeSpec,
+    //       )
+    //       if (!foundInfo) {
+    //         return {
+    //           specName,
+    //           duration: Math.round(averageDuration),
+    //         }
+    //       } else {
+    //         return {
+    //           specName,
+    //           duration: Math.round(foundInfo.duration),
+    //         }
+    //       }
+    //     })
+    //     debug('splitting by duration %d ways', splitN)
+    //     debug(specsWithDurations)
+    //     const { chunks, sums } = splitByDuration(splitN, specsWithDurations)
+    //     debug('split by duration')
+    //     debug(chunks)
+    //     debug('sums of durations for chunks')
+    //     debug(sums)
 
-        printSpecsListWithDurations(chunks[splitIndex])
-      } catch (err) {
-        console.error('%s Could not split specs by duration', label)
-        console.error(err.message)
-        console.error('%s splitting as is by name', label)
-        splitSpecs = getChunk(specs, splitN, splitIndex)
-        printSpecsList(splitSpecs)
-      }
-    } else {
-      splitSpecs = getChunk(specs, splitN, splitIndex)
-      printSpecsList(splitSpecs)
-    }
+    //     splitSpecs = chunks[splitIndex].map((item) => item.specName)
+    //     console.log(
+    //       '%s split %d specs using durations from %s file',
+    //       label,
+    //       specsWithDurations.length,
+    //       SPLIT_FILE,
+    //     )
+    //     console.log(
+    //       '%s approximate total duration for current chunk is %s (plus Cypress overhead)',
+    //       label,
+    //       humanizeDuration(Math.round(sums[splitIndex])),
+    //     )
+
+    //     printSpecsListWithDurations(chunks[splitIndex])
+    //   } catch (err) {
+    //     console.error('%s Could not split specs by duration', label)
+    //     console.error(err.message)
+    //     console.error('%s splitting as is by name', label)
+    //     splitSpecs = getChunk(specs, splitN, splitIndex)
+    //     printSpecsList(splitSpecs)
+    //   }
+    // } else {
+    //   splitSpecs = getChunk(specs, splitN, splitIndex)
+    //   printSpecsList(splitSpecs)
+    // }
     debug('split specs')
     debug(splitSpecs)
 
@@ -455,6 +394,8 @@ function cypressSplit(on, config) {
     }
 
     return config
+  } else {
+    debug('no SPLIT or SPLIT_INDEX, not splitting specs')
   }
 }
 

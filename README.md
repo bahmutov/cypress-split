@@ -285,6 +285,17 @@ See example [bahmutov/cypress-split-timings-example](https://github.com/bahmutov
 
 **Note 2:** during Cypress execution, the working directory is set to the folder with the Cypress config file. This module tries its best to find the split file by searching the parent folders to the Git repo or root folder.
 
+## Preview
+
+You can see how this plugin is going to split the specs using the `cypress-split-preview` alias
+
+```
+# show the split across N machines
+$ npx cypress-split-preview --split <N>
+# show the split across N machines based on spec timings
+$ npx cypress-split-preview --split <N> --split-file <JSON filename>
+```
+
 ## Merging timings files
 
 This module includes a bin utility to merge multiple timings files into one. Example:
