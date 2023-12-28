@@ -89,11 +89,6 @@ function cypressSplit(on, config) {
 
   let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, specs, ciName } =
     parseSplitInputs(process.env, config.env)
-  // let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
-  // let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
-  // let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
-  // let SPLIT_OUTPUT_FILE =
-  //   process.env.SPLIT_OUTPUT_FILE || config.env.splitOutputFile || SPLIT_FILE
 
   if (SPLIT_FILE) {
     console.log('%s Timings are read from %s', label, SPLIT_FILE)
@@ -102,42 +97,6 @@ function cypressSplit(on, config) {
     console.log('%s Timings will be written to %s', label, SPLIT_OUTPUT_FILE)
   }
 
-  // // some CI systems like TeamCity provide agent index starting with 1
-  // // let's check for SPLIT_INDEX1 and if it is set,
-  // // use it instead of zero-based SPLIT_INDEX
-  // debug('split index 1 possible values', {
-  //   SPLIT_INDEX1: process.env.SPLIT_INDEX1,
-  //   splitIndex1: config.env.splitIndex1,
-  // })
-  // if (process.env.SPLIT_INDEX1 || config.env.splitIndex1) {
-  //   const indexOne = process.env.SPLIT_INDEX1 || config.env.splitIndex1
-  //   SPLIT_INDEX = Number(indexOne) - 1
-  //   debug(
-  //     'set SPLIT_INDEX to %d from index starting with 1 "%s"',
-  //     SPLIT_INDEX,
-  //     indexOne,
-  //   )
-  // }
-
-  // potentially a list of files to run / split
-  // let SPEC = process.env.SPEC || config.env.spec || config.env.SPEC
-  // /** @type {string[]|undefined} absolute spec filenames */
-  // let specs
-  // if (typeof SPEC === 'string' && SPEC) {
-  //   specs = SPEC.split(',')
-  //     .map((s) => s.trim())
-  //     .filter(Boolean)
-  //     .map((specFilename) => {
-  //       // make sure every spec filename is absolute
-  //       return path.resolve(specFilename)
-  //     })
-  //   console.log(
-  //     '%s have explicit %d spec %s',
-  //     label,
-  //     specs.length,
-  //     specs.length === 1 ? 'file' : 'files',
-  //   )
-  // }
   if (specs) {
     console.log(
       '%s have explicit %d spec %s',
@@ -156,36 +115,6 @@ function cypressSplit(on, config) {
       SPLIT,
     )
   }
-
-  // if (SPLIT === 'true' || SPLIT === true) {
-  //   // the user wants us to determine the machine index
-  //   // and the total number of machines, which is possible for some CI systems
-  //   if (process.env.CIRCLECI) {
-  //     SPLIT = process.env.CIRCLE_NODE_TOTAL
-  //     SPLIT_INDEX = process.env.CIRCLE_NODE_INDEX
-  //     console.log(
-  //       '%s detected CircleCI machine %d of %d',
-  //       label,
-  //       SPLIT_INDEX,
-  //       SPLIT,
-  //     )
-  //   } else if (process.env.CI_NODE_INDEX && process.env.CI_NODE_TOTAL) {
-  //     // GitLab CI
-  //     // https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-  //     SPLIT = process.env.CI_NODE_TOTAL
-  //     // GitLabCI index starts with 1
-  //     // convert it to zero base
-  //     SPLIT_INDEX = Number(process.env.CI_NODE_INDEX) - 1
-  //     console.log(
-  //       '%s detected GitLabCI machine %d of %d',
-  //       label,
-  //       SPLIT_INDEX,
-  //       SPLIT,
-  //     )
-  //   } else {
-  //     throw new Error('Do not know how to determine the correct split')
-  //   }
-  // }
 
   if (isDefined(SPLIT) && isDefined(SPLIT_INDEX)) {
     if (!specs) {
