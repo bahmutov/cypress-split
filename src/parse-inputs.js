@@ -57,9 +57,9 @@ function parseSplitInputs(env = {}, configEnv = {}) {
  * Each spec filename is absolute.
  * @returns {string[]} list of spec filenames
  */
-function getSpecsToSplit(env = {}, config = {}) {
+function getSpecsToSplit(env = {}, config) {
   // potentially a list of files to run / split
-  let SPEC = env.SPEC || config.env.spec || config.env.SPEC
+  let SPEC = env.SPEC || config?.env?.spec || config?.env?.SPEC
   if (typeof SPEC === 'string' && SPEC) {
     debug('using explicit list of specs "%s"', SPEC)
     const specs = SPEC.split(',')
