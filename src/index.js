@@ -6,7 +6,7 @@ const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const { getChunk } = require('./chunk')
 const { findFile } = require('./find-file')
-const { parseSplitInputs } = require('./parse-inputs')
+const { parseSplitInputs, getSpecsToSplit } = require('./parse-inputs')
 const {
   splitByDuration,
   hasTimeDifferences,
@@ -87,7 +87,7 @@ function cypressSplit(on, config) {
     specAbsoluteToRelative[absoluteSpecPath] = spec.relative
   })
 
-  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, specs, ciName } =
+  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, ciName } =
     parseSplitInputs(process.env, config.env)
 
   if (SPLIT_FILE) {
@@ -95,15 +95,6 @@ function cypressSplit(on, config) {
   }
   if (SPLIT_OUTPUT_FILE) {
     console.log('%s Timings will be written to %s', label, SPLIT_OUTPUT_FILE)
-  }
-
-  if (specs) {
-    console.log(
-      '%s have explicit %d spec %s',
-      label,
-      specs.length,
-      specs.length === 1 ? 'file' : 'files',
-    )
   }
 
   if (ciName) {
@@ -117,11 +108,12 @@ function cypressSplit(on, config) {
   }
 
   if (isDefined(SPLIT) && isDefined(SPLIT_INDEX)) {
-    if (!specs) {
-      const returnAbsolute = true
-      // @ts-ignore
-      specs = getSpecs(config, undefined, returnAbsolute)
-    }
+    // if (!specs) {
+    //   const returnAbsolute = true
+    //   // @ts-ignore
+    //   specs = getSpecs(config, undefined, returnAbsolute)
+    // }
+    const specs = getSpecsToSplit(process.env, config)
 
     console.log('%s there are %d found specs', label, specs.length)
     // console.log(specs)
@@ -409,6 +401,8 @@ function cypressSplit(on, config) {
     }
 
     return config
+  } else {
+    debug('no SPLIT or SPLIT_INDEX, not splitting specs')
   }
 }
 

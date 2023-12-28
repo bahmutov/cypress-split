@@ -1,6 +1,7 @@
 // @ts-check
 const debug = require('debug')('cypress-split')
 const path = require('path')
+const { getSpecs } = require('find-cypress-specs')
 
 function parseSplitInputs(env = {}, configEnv = {}) {
   let SPLIT = env.SPLIT || configEnv.split || configEnv.SPLIT
@@ -26,20 +27,6 @@ function parseSplitInputs(env = {}, configEnv = {}) {
     )
   }
 
-  // potentially a list of files to run / split
-  let SPEC = env.SPEC || configEnv.spec || configEnv.SPEC
-  /** @type {string[]|undefined} absolute spec filenames */
-  let specs
-  if (typeof SPEC === 'string' && SPEC) {
-    specs = SPEC.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map((specFilename) => {
-        // make sure every spec filename is absolute
-        return path.resolve(specFilename)
-      })
-  }
-
   let ciName
 
   if (SPLIT === 'true' || SPLIT === true) {
@@ -62,7 +49,32 @@ function parseSplitInputs(env = {}, configEnv = {}) {
     }
   }
 
-  return { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, specs, ciName }
+  return { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, ciName }
 }
 
-module.exports = { parseSplitInputs }
+/**
+ * Returns a list of spec filenames to split.
+ * Each spec filename is absolute.
+ * @returns {string[]} list of spec filenames
+ */
+function getSpecsToSplit(env = {}, config = {}) {
+  // potentially a list of files to run / split
+  let SPEC = env.SPEC || config.env.spec || config.env.SPEC
+  if (typeof SPEC === 'string' && SPEC) {
+    debug('using explicit list of specs "%s"', SPEC)
+    const specs = SPEC.split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((specFilename) => {
+        // make sure every spec filename is absolute
+        return path.resolve(specFilename)
+      })
+    return specs
+  } else {
+    const returnAbsolute = true
+    const specs = getSpecs(config, undefined, returnAbsolute)
+    return specs
+  }
+}
+
+module.exports = { parseSplitInputs, getSpecsToSplit }
