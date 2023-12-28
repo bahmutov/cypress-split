@@ -4,7 +4,8 @@
   "description": "Split Cypress specs across parallel CI machines for speed",
   "main": "src/index.js",
   "bin": {
-    "cypress-split-merge": "./bin/merge.js"
+    "cypress-split-merge": "./bin/merge.js",
+    "cypress-split-preview": "./bin/preview.js"
   },
   "files": [
     "src",

@@ -6,6 +6,7 @@ const { getSpecs } = require('find-cypress-specs')
 const ghCore = require('@actions/core')
 const { getChunk } = require('./chunk')
 const { findFile } = require('./find-file')
+const { parseSplitInputs } = require('./parse-inputs')
 const {
   splitByDuration,
   hasTimeDifferences,
@@ -86,11 +87,15 @@ function cypressSplit(on, config) {
     specAbsoluteToRelative[absoluteSpecPath] = spec.relative
   })
 
-  let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
-  let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
-  let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
-  let SPLIT_OUTPUT_FILE =
-    process.env.SPLIT_OUTPUT_FILE || config.env.splitOutputFile || SPLIT_FILE
+  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE } = parseSplitInputs(
+    process.env,
+    config.env,
+  )
+  // let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
+  // let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
+  // let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
+  // let SPLIT_OUTPUT_FILE =
+  //   process.env.SPLIT_OUTPUT_FILE || config.env.splitOutputFile || SPLIT_FILE
 
   console.log('%s Timings are read from %s', label, SPLIT_FILE)
   console.log('%s Timings will be written to %s', label, SPLIT_OUTPUT_FILE)
