@@ -87,10 +87,8 @@ function cypressSplit(on, config) {
     specAbsoluteToRelative[absoluteSpecPath] = spec.relative
   })
 
-  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE } = parseSplitInputs(
-    process.env,
-    config.env,
-  )
+  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, specs } =
+    parseSplitInputs(process.env, config.env)
   // let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   // let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
   // let SPLIT_FILE = process.env.SPLIT_FILE || config.env.splitFile
@@ -100,35 +98,43 @@ function cypressSplit(on, config) {
   console.log('%s Timings are read from %s', label, SPLIT_FILE)
   console.log('%s Timings will be written to %s', label, SPLIT_OUTPUT_FILE)
 
-  // some CI systems like TeamCity provide agent index starting with 1
-  // let's check for SPLIT_INDEX1 and if it is set,
-  // use it instead of zero-based SPLIT_INDEX
-  debug('split index 1 possible values', {
-    SPLIT_INDEX1: process.env.SPLIT_INDEX1,
-    splitIndex1: config.env.splitIndex1,
-  })
-  if (process.env.SPLIT_INDEX1 || config.env.splitIndex1) {
-    const indexOne = process.env.SPLIT_INDEX1 || config.env.splitIndex1
-    SPLIT_INDEX = Number(indexOne) - 1
-    debug(
-      'set SPLIT_INDEX to %d from index starting with 1 "%s"',
-      SPLIT_INDEX,
-      indexOne,
-    )
-  }
+  // // some CI systems like TeamCity provide agent index starting with 1
+  // // let's check for SPLIT_INDEX1 and if it is set,
+  // // use it instead of zero-based SPLIT_INDEX
+  // debug('split index 1 possible values', {
+  //   SPLIT_INDEX1: process.env.SPLIT_INDEX1,
+  //   splitIndex1: config.env.splitIndex1,
+  // })
+  // if (process.env.SPLIT_INDEX1 || config.env.splitIndex1) {
+  //   const indexOne = process.env.SPLIT_INDEX1 || config.env.splitIndex1
+  //   SPLIT_INDEX = Number(indexOne) - 1
+  //   debug(
+  //     'set SPLIT_INDEX to %d from index starting with 1 "%s"',
+  //     SPLIT_INDEX,
+  //     indexOne,
+  //   )
+  // }
 
   // potentially a list of files to run / split
-  let SPEC = process.env.SPEC || config.env.spec || config.env.SPEC
-  /** @type {string[]|undefined} absolute spec filenames */
-  let specs
-  if (typeof SPEC === 'string' && SPEC) {
-    specs = SPEC.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map((specFilename) => {
-        // make sure every spec filename is absolute
-        return path.resolve(specFilename)
-      })
+  // let SPEC = process.env.SPEC || config.env.spec || config.env.SPEC
+  // /** @type {string[]|undefined} absolute spec filenames */
+  // let specs
+  // if (typeof SPEC === 'string' && SPEC) {
+  //   specs = SPEC.split(',')
+  //     .map((s) => s.trim())
+  //     .filter(Boolean)
+  //     .map((specFilename) => {
+  //       // make sure every spec filename is absolute
+  //       return path.resolve(specFilename)
+  //     })
+  //   console.log(
+  //     '%s have explicit %d spec %s',
+  //     label,
+  //     specs.length,
+  //     specs.length === 1 ? 'file' : 'files',
+  //   )
+  // }
+  if (specs) {
     console.log(
       '%s have explicit %d spec %s',
       label,
