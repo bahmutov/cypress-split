@@ -87,7 +87,7 @@ function cypressSplit(on, config) {
     specAbsoluteToRelative[absoluteSpecPath] = spec.relative
   })
 
-  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, specs } =
+  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, specs, ciName } =
     parseSplitInputs(process.env, config.env)
   // let SPLIT = process.env.SPLIT || config.env.split || config.env.SPLIT
   // let SPLIT_INDEX = process.env.SPLIT_INDEX || config.env.splitIndex
@@ -143,35 +143,45 @@ function cypressSplit(on, config) {
     )
   }
 
-  if (SPLIT === 'true' || SPLIT === true) {
-    // the user wants us to determine the machine index
-    // and the total number of machines, which is possible for some CI systems
-    if (process.env.CIRCLECI) {
-      SPLIT = process.env.CIRCLE_NODE_TOTAL
-      SPLIT_INDEX = process.env.CIRCLE_NODE_INDEX
-      console.log(
-        '%s detected CircleCI machine %d of %d',
-        label,
-        SPLIT_INDEX,
-        SPLIT,
-      )
-    } else if (process.env.CI_NODE_INDEX && process.env.CI_NODE_TOTAL) {
-      // GitLab CI
-      // https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-      SPLIT = process.env.CI_NODE_TOTAL
-      // GitLabCI index starts with 1
-      // convert it to zero base
-      SPLIT_INDEX = Number(process.env.CI_NODE_INDEX) - 1
-      console.log(
-        '%s detected GitLabCI machine %d of %d',
-        label,
-        SPLIT_INDEX,
-        SPLIT,
-      )
-    } else {
-      throw new Error('Do not know how to determine the correct split')
-    }
+  if (ciName) {
+    console.log(
+      '%s detected %s machine %d of %d',
+      label,
+      ciName,
+      SPLIT_INDEX,
+      SPLIT,
+    )
   }
+
+  // if (SPLIT === 'true' || SPLIT === true) {
+  //   // the user wants us to determine the machine index
+  //   // and the total number of machines, which is possible for some CI systems
+  //   if (process.env.CIRCLECI) {
+  //     SPLIT = process.env.CIRCLE_NODE_TOTAL
+  //     SPLIT_INDEX = process.env.CIRCLE_NODE_INDEX
+  //     console.log(
+  //       '%s detected CircleCI machine %d of %d',
+  //       label,
+  //       SPLIT_INDEX,
+  //       SPLIT,
+  //     )
+  //   } else if (process.env.CI_NODE_INDEX && process.env.CI_NODE_TOTAL) {
+  //     // GitLab CI
+  //     // https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+  //     SPLIT = process.env.CI_NODE_TOTAL
+  //     // GitLabCI index starts with 1
+  //     // convert it to zero base
+  //     SPLIT_INDEX = Number(process.env.CI_NODE_INDEX) - 1
+  //     console.log(
+  //       '%s detected GitLabCI machine %d of %d',
+  //       label,
+  //       SPLIT_INDEX,
+  //       SPLIT,
+  //     )
+  //   } else {
+  //     throw new Error('Do not know how to determine the correct split')
+  //   }
+  // }
 
   if (isDefined(SPLIT) && isDefined(SPLIT_INDEX)) {
     if (!specs) {
