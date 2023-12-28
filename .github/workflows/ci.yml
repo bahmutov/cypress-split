@@ -97,6 +97,13 @@ jobs:
         with:
           command: npm run demo-preview
 
+      - name: Preview the split with timings 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          install: false
+          command: npm run demo-preview -- --split-file ./timings.json
+
   test-split:
     needs: prepare
     runs-on: ubuntu-22.04
