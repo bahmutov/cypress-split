@@ -17,19 +17,21 @@ const args = arg({
 })
 debug(args)
 
-console.log('%s split %d ways', label, args['--split'])
+const n = args['--split']
+console.log('%s split %d ways', label, n)
 const specs = getSpecsToSplit(process.env)
 console.log('%s found %d specs', label, specs.length)
 debug(specs)
 
-if (typeof args['--split'] !== 'number') {
+if (typeof n !== 'number') {
   throw new Error('Please provide --split N')
 }
 
-for (let k = 0; k < args['--split']; k += 1) {
+for (let k = 0; k < n; k += 1) {
+  console.log('%s chunk %d of %d', label, k + 1, n)
   splitSpecsLogic({
     specs,
-    splitN: args['--split'],
+    splitN: n,
     splitIndex: k,
     splitFileName: args['--split-file'],
     label,
