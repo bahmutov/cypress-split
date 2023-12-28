@@ -98,8 +98,12 @@ function cypressSplit(on, config) {
   // some CI systems like TeamCity provide agent index starting with 1
   // let's check for SPLIT_INDEX1 and if it is set,
   // use it instead of zero-based SPLIT_INDEX
-  if (process.env.SPLIT_INDEX1 || config.env.splitIndex) {
-    const indexOne = process.env.SPLIT_INDEX1 || config.env.splitIndex
+  debug('split index 1 possible values', {
+    SPLIT_INDEX1: process.env.SPLIT_INDEX1,
+    splitIndex1: config.env.splitIndex1,
+  })
+  if (process.env.SPLIT_INDEX1 || config.env.splitIndex1) {
+    const indexOne = process.env.SPLIT_INDEX1 || config.env.splitIndex1
     SPLIT_INDEX = Number(indexOne) - 1
     debug(
       'set SPLIT_INDEX to %d from index starting with 1 "%s"',
