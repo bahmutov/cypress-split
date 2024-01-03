@@ -37,7 +37,7 @@ jobs:
 
       - name: Run split Cypress E2E tests 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           build: npm run test-names
         # using operating system process environment variables
@@ -55,7 +55,7 @@ jobs:
 
       - name: Run Cypress E2E tests in the subfolder 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           build: npm run subfolder
         env:
@@ -69,7 +69,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies 🧪
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           runTests: false
 
@@ -93,13 +93,13 @@ jobs:
 
       - name: Preview the split 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           command: npm run demo-preview
 
       - name: Preview the split with timings 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           install: false
           command: npm run demo-preview -- --split-file ./timings.json
@@ -122,7 +122,7 @@ jobs:
 
       - name: Run split Cypress tests 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           build: npm run test-names
         # using operating system process environment variables
@@ -139,7 +139,7 @@ jobs:
 
       - name: Run some Cypress tests 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         # run half of all specs
         env:
           SPLIT: 2
@@ -155,7 +155,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Run an empty Cypress split 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           build: npm run deps
           command: npm run empty
@@ -167,7 +167,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Split explicit user list of specs 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           command: npm run user-specs
 
@@ -178,7 +178,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Split specs based on timings json file 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           command: npm run timings
 
@@ -189,7 +189,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Split specs based on timings json file 🧪, write output to different file 🗃️
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           command: npm run timings-split-output-file
       - name: Show split output file
@@ -202,7 +202,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Split specs based on non-existent timings json file 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           command: npm run timings-no-file
 
@@ -213,7 +213,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Needs to find the timings file 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           project: examples/timings-file/tests/cypress-tests
         env:
@@ -245,7 +245,7 @@ jobs:
 
       - name: Run split Cypress E2E tests 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         # using operating system process environment variables
         env:
           SPEC: 'cypress/e2e/spec-b.cy.js,cypress/e2e/spec-e.cy.js'
