@@ -4,7 +4,7 @@ orbs:
   # import Cypress orb by specifying an exact version x.y.z
   # or the latest version 1.x.x using "@1" syntax
   # https://github.com/cypress-io/circleci-orb
-  cypress: cypress-io/cypress@2.2.0
+  cypress: cypress-io/cypress@3.3.0
 workflows:
   build:
     jobs:
