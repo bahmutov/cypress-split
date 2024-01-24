@@ -27,7 +27,9 @@
     "timings-no-file": "DEBUG=cypress-split SPLIT=1 SPLIT_INDEX=0 SPLIT_FILE=does-not-exist.json cypress run",
     "timings-split-output-file": "DEBUG=cypress-split SPLIT=2 SPLIT_INDEX=0 SPLIT_OUTPUT_FILE=new-timings.json SPLIT_FILE=timings.json cypress run",
     "demo-merge": "node ./bin/merge --parent-folder examples/split-times --split-file timings.json --output out-timings.json",
-    "demo-preview": "node ./bin/preview --split 2"
+    "demo-preview": "node ./bin/preview --split 2",
+    "unit": "ava test/*.test.js",
+    "unit:watch": "ava --watch test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -55,6 +57,7 @@
     "humanize-duration": "^3.28.0"
   },
   "devDependencies": {
+    "ava": "^6.1.0",
     "cypress": "^13.3.0",
     "prettier": "^3.0.3",
     "react": "^18.2.0",

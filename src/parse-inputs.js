@@ -2,6 +2,7 @@
 const debug = require('debug')('cypress-split')
 const path = require('path')
 const { getSpecs } = require('find-cypress-specs')
+const globby = require('globby')
 
 function parseSplitInputs(env = {}, configEnv = {}) {
   let SPLIT = env.SPLIT || configEnv.split || configEnv.SPLIT
@@ -62,13 +63,28 @@ function getSpecsToSplit(env = {}, config) {
   let SPEC = env.SPEC || config?.env?.spec || config?.env?.SPEC
   if (typeof SPEC === 'string' && SPEC) {
     debug('using explicit list of specs "%s"', SPEC)
-    const specs = SPEC.split(',')
+    const possiblePatterns = SPEC.split(',')
       .map((s) => s.trim())
       .filter(Boolean)
       .map((specFilename) => {
         // make sure every spec filename is absolute
         return path.resolve(specFilename)
       })
+    // all resolved absolute spec filenames
+    const specs = []
+    possiblePatterns.forEach((pattern) => {
+      if (pattern.includes('*')) {
+        // the user specified the wildcard pattern
+        // resolve it using globby and searching the disk
+        const found = globby.sync(pattern)
+        debug('found %d specs for pattern "%s"', found.length, pattern)
+        specs.push(...found)
+      } else {
+        // pass the user-specified filename as is
+        debug('adding spec "%s"', pattern)
+        specs.push(pattern)
+      }
+    })
     return specs
   } else {
     const returnAbsolute = true

@@ -24,6 +24,21 @@ jobs:
       - name: Print result 🖨
         run: echo '${{ steps.prepare.outputs.matrix }}'
 
+  test-unit:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Install dependencies 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v6
+        with:
+          runTests: false
+
+      - name: Run unit tests 🧪
+        run: npm run unit
+
   # two jobs that split 2 explicit specs
   test-spec:
     runs-on: ubuntu-22.04
@@ -258,6 +273,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs:
       [
+        test-unit,
         test-empty,
         test-split,
         test-spec,
