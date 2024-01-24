@@ -410,6 +410,17 @@ Cannot parse as valid JSON
 $ SPEC=... npx cypress run --spec "..."
 ```
 
+### Wildcards
+
+If your `spec` pattern includes wildcards `*` then they will be resolved using `globby` module.
+
+```
+# split all specs inside the `cypress/e2e` folder
+SPEC="cypress/e2e/**/*.cy.js" npx cypress run --spec "cypress/e2e/**/*.cy.js"
+# or the equivalent using --env parameter
+npx cypress run --spec "cypress/e2e/**/*.cy.js" --env spec="cypress/e2e/**/*.cy.js"
+```
+
 ## Cucumber feature specs
 
 Should work just the same, see the tested example in [bahmutov/cypress-split-cucumber-example](https://github.com/bahmutov/cypress-split-cucumber-example)
