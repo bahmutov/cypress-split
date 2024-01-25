@@ -38,6 +38,7 @@
 ## Videos
 
 - 📺 Watch presentation [Fast Testing Using Cypress For Free 💸💸💸](https://youtu.be/1idlr9IE0oU) and see its [slides](https://slides.com/bahmutov/fast-testing-using-cypress-for-free)
+- [Cut Cypress Execution In Half By Running Tests In Parallel Using cypress-split And GitHub Actions](https://youtu.be/jvBzNs0pRXU)
 
 ## Install
 
