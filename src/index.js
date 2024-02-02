@@ -237,9 +237,10 @@ function cypressSplit(on, config) {
             const relativeName = specAbsoluteToRelative[absoluteSpecPath]
             const specResult = specResults[absoluteSpecPath]
             if (specResult) {
-              const passsed =
+              const passed =
                 specResult.stats.passes > 0 && specResult.stats.failures === 0
-              if (passsed) {
+              const allPending = specResults.stats.tests === specResults.stats.pending
+              if (passed || allPending) {
                 const duration = Math.round(
                   specResult.stats.duration ||
                     specResult.stats.wallClockDuration,
