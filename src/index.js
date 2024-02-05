@@ -169,11 +169,14 @@ function cypressSplit(on, config) {
                 specResult.stats.passes > 0 && specResult.stats.failures === 0
               const allPending =
                 specResult.stats.tests === specResult.stats.pending
+              debug({ relativeName, passed, allPending })
+
               if (passed || allPending) {
                 const duration = Math.round(
                   specResult.stats.duration ||
                     specResult.stats.wallClockDuration,
                 )
+                debug('new info %o', { relativeName, duration })
                 return {
                   spec: relativeName,
                   duration,

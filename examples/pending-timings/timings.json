@@ -1,0 +1,16 @@
+{
+  "durations": [
+    {
+      "spec": "cypress/e2e/spec-a.cy.js",
+      "duration": 100
+    },
+    {
+      "spec": "cypress/e2e/spec-b.cy.js",
+      "duration": 100
+    },
+    {
+      "spec": "cypress/e2e/spec-c.cy.js",
+      "duration": 1000
+    }
+  ]
+}
