@@ -107,11 +107,6 @@ function cypressSplit(on, config) {
     console.log('%s chunk %d of %d', label, splitIndex + 1, splitN)
 
     debug('get chunk %o', { specs, splitN, splitIndex })
-    /* @type {string[]} absolute spec filenames */
-    // let splitSpecs
-
-    // const cwd = process.cwd()
-    // console.log('%s specs from the current directory %s', label, cwd)
 
     const { splitSpecs, foundSplitFile } = splitSpecsLogic({
       specs,
@@ -121,73 +116,6 @@ function cypressSplit(on, config) {
       label,
     })
 
-    // let foundSplitFile
-    // if (SPLIT_FILE) {
-    //   debug('loading split file %s', SPLIT_FILE)
-    //   try {
-    //     foundSplitFile = findFile(SPLIT_FILE)
-    //     if (!foundSplitFile) {
-    //       throw new Error(
-    //         `Could not find ${SPLIT_FILE} based on the current working directory ${cwd}`,
-    //       )
-    //     }
-    //     const splitFile = JSON.parse(fs.readFileSync(foundSplitFile, 'utf8'))
-    //     const previousDurations = splitFile.durations
-    //     const averageDuration =
-    //       previousDurations
-    //         .map((item) => item.duration)
-    //         .reduce((sum, duration) => (sum += duration), 0) /
-    //       previousDurations.length
-    //     const specsWithDurations = specs.map((specName) => {
-    //       const relativeSpec = path.relative(cwd, specName)
-    //       const foundInfo = previousDurations.find(
-    //         (item) => item.spec === relativeSpec,
-    //       )
-    //       if (!foundInfo) {
-    //         return {
-    //           specName,
-    //           duration: Math.round(averageDuration),
-    //         }
-    //       } else {
-    //         return {
-    //           specName,
-    //           duration: Math.round(foundInfo.duration),
-    //         }
-    //       }
-    //     })
-    //     debug('splitting by duration %d ways', splitN)
-    //     debug(specsWithDurations)
-    //     const { chunks, sums } = splitByDuration(splitN, specsWithDurations)
-    //     debug('split by duration')
-    //     debug(chunks)
-    //     debug('sums of durations for chunks')
-    //     debug(sums)
-
-    //     splitSpecs = chunks[splitIndex].map((item) => item.specName)
-    //     console.log(
-    //       '%s split %d specs using durations from %s file',
-    //       label,
-    //       specsWithDurations.length,
-    //       SPLIT_FILE,
-    //     )
-    //     console.log(
-    //       '%s approximate total duration for current chunk is %s (plus Cypress overhead)',
-    //       label,
-    //       humanizeDuration(Math.round(sums[splitIndex])),
-    //     )
-
-    //     printSpecsListWithDurations(chunks[splitIndex])
-    //   } catch (err) {
-    //     console.error('%s Could not split specs by duration', label)
-    //     console.error(err.message)
-    //     console.error('%s splitting as is by name', label)
-    //     splitSpecs = getChunk(specs, splitN, splitIndex)
-    //     printSpecsList(splitSpecs)
-    //   }
-    // } else {
-    //   splitSpecs = getChunk(specs, splitN, splitIndex)
-    //   printSpecsList(splitSpecs)
-    // }
     debug('split specs')
     debug(splitSpecs)
 
@@ -239,7 +167,8 @@ function cypressSplit(on, config) {
             if (specResult) {
               const passed =
                 specResult.stats.passes > 0 && specResult.stats.failures === 0
-              const allPending = specResults.stats.tests === specResults.stats.pending
+              const allPending =
+                specResult.stats.tests === specResult.stats.pending
               if (passed || allPending) {
                 const duration = Math.round(
                   specResult.stats.duration ||
