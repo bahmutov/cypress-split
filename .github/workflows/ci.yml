@@ -257,16 +257,15 @@ jobs:
 
   test-workflow-e2e:
     # https://github.com/bahmutov/cypress-workflows
-    uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
+    uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v2
     with:
-      n: 3
+      nE2E: 3
 
   test-workflow-component:
     # https://github.com/bahmutov/cypress-workflows
-    uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v1
+    uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v2
     with:
-      component: true
-      n: 2
+      nComponent: 2
 
   # using SPLIT_INDEX1 to start index at 1
   test-index1:
