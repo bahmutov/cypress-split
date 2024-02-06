@@ -422,6 +422,34 @@ SPEC="cypress/e2e/**/*.cy.js" npx cypress run --spec "cypress/e2e/**/*.cy.js"
 npx cypress run --spec "cypress/e2e/**/*.cy.js" --env spec="cypress/e2e/**/*.cy.js"
 ```
 
+## Relative specs output
+
+If `cypress-split` has `SPLIT` and the index and finds the specs, it sets the list of specs in the `config` object
+
+```js
+setupNodeEvents(on, config) {
+  cypressSplit(on, config)
+  // config.specPattern is a string[]
+  // of absolute filenames
+  return config
+}
+```
+
+Some situations require relative spec names, for example in Angular component specs. You can transform the specs into relative form yourself before returning the config:
+
+```js
+setupNodeEvents(on, config) {
+  cypressSplit(on, config)
+  if (Array.isArray(config.specPattern)) {
+    // change the absolute filenames to relative
+    config.specPattern = config.specPattern.map((file) => {
+      return file.replace(process.cwd(), '.')
+    })
+  }
+  return config
+}
+```
+
 ## Cucumber feature specs
 
 Should work just the same, see the tested example in [bahmutov/cypress-split-cucumber-example](https://github.com/bahmutov/cypress-split-cucumber-example)
