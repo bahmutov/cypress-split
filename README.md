@@ -411,6 +411,16 @@ Cannot parse as valid JSON
 $ SPEC=... npx cypress run --spec "..."
 ```
 
+### Skip specs
+
+You can pass a list of specs to _exclude_ before splitting up across the machines.
+
+```
+SKIP_SPEC="spec1,spec2" SPLIT=2 ...
+# finds the list of specs and removes "spec1" and "spec2"
+# before dividing across two machines
+```
+
 ### Wildcards
 
 If your `spec` pattern includes wildcards `*` then they will be resolved using `globby` module.

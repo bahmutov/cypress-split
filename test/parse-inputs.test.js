@@ -33,6 +33,22 @@ test('getSpecsToSplit spec pattern with wildcards', (t) => {
   ])
 })
 
+test('getSpecsToSplit with skip specs', (t) => {
+  const specs = getSpecsToSplit({
+    SPEC: 'cypress/e2e/spec-*.cy.js',
+    SKIP_SPEC: 'cypress/e2e/spec-b.cy.js',
+  })
+  // finds all specs matching the glob pattern
+  // but without "spec-b.cy.js"
+  const relativeSpecs = toRelative(specs)
+  t.deepEqual(relativeSpecs, [
+    'cypress/e2e/spec-a.cy.js',
+    'cypress/e2e/spec-c.cy.js',
+    'cypress/e2e/spec-d.cy.js',
+    'cypress/e2e/spec-e.cy.js',
+  ])
+})
+
 test('getSpecsToSplit spec pattern with subfolder wildcards', (t) => {
   const specs = getSpecsToSplit({
     SPEC: 'cypress/**/spec-*.cy.js',

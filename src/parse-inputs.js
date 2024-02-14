@@ -85,6 +85,9 @@ function getSpecsToSplit(env = {}, config) {
   }
   if (skipSpecs.length) {
     debug('skipping %d specs', skipSpecs.length)
+    if (skipSpecs.length < 10) {
+      debug('skipping specs %o', skipSpecs)
+    }
   }
 
   // potentially a list of files to run / split
@@ -114,11 +117,25 @@ function getSpecsToSplit(env = {}, config) {
       }
     })
     // returned a filtered list
+    if (skipSpecs.length) {
+      debug(
+        'before skipping specs %d, filtering %d specs',
+        specs.length,
+        skipSpecs.length,
+      )
+    }
     return specs.filter((spec) => !skipSpecs.includes(spec))
   } else {
     const returnAbsolute = true
     const specs = getSpecs(config, undefined, returnAbsolute)
     // returned a filtered list
+    if (skipSpecs.length) {
+      debug(
+        'before skipping specs %d, filtering %d specs',
+        specs.length,
+        skipSpecs.length,
+      )
+    }
     return specs.filter((spec) => !skipSpecs.includes(spec))
   }
 }

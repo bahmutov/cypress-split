@@ -299,7 +299,7 @@ jobs:
           # should exclude these specs
           SKIP_SPEC: 'cypress/e2e/spec-b.cy.js,cypress/e2e/spec-e.cy.js'
           SPLIT: 2
-          SPLIT_INDEX1: 0
+          SPLIT_INDEX: 0
           DEBUG: 'cypress-split'
 
   release:
