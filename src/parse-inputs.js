@@ -59,6 +59,34 @@ function parseSplitInputs(env = {}, configEnv = {}) {
  * @returns {string[]} list of spec filenames
  */
 function getSpecsToSplit(env = {}, config) {
+  // potential list of specs to skip
+  let SKIP_SPEC =
+    env.SKIP_SPEC || config?.env?.skipSpec || config?.env?.SKIP_SPEC
+  const skipSpecs = []
+  if (typeof SKIP_SPEC === 'string' && SKIP_SPEC) {
+    const possiblePatterns = SKIP_SPEC.split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((specFilename) => {
+        // make sure every spec filename is absolute
+        return path.resolve(specFilename)
+      })
+    // all resolved absolute spec filenames
+    possiblePatterns.forEach((pattern) => {
+      if (pattern.includes('*')) {
+        // the user specified the wildcard pattern
+        // resolve it using globby and searching the disk
+        const found = globby.sync(pattern)
+        skipSpecs.push(...found)
+      } else {
+        skipSpecs.push(pattern)
+      }
+    })
+  }
+  if (skipSpecs.length) {
+    debug('skipping %d specs', skipSpecs.length)
+  }
+
   // potentially a list of files to run / split
   let SPEC = env.SPEC || config?.env?.spec || config?.env?.SPEC
   if (typeof SPEC === 'string' && SPEC) {
@@ -85,11 +113,13 @@ function getSpecsToSplit(env = {}, config) {
         specs.push(pattern)
       }
     })
-    return specs
+    // returned a filtered list
+    return specs.filter((spec) => !skipSpecs.includes(spec))
   } else {
     const returnAbsolute = true
     const specs = getSpecs(config, undefined, returnAbsolute)
-    return specs
+    // returned a filtered list
+    return specs.filter((spec) => !skipSpecs.includes(spec))
   }
 }
 
