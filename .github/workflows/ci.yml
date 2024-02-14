@@ -285,10 +285,28 @@ jobs:
           SPLIT_INDEX1: 1
           DEBUG: 'cypress-split'
 
+  test-skipped-specs:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Run split Cypress E2E tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v6
+        # using operating system process environment variables
+        env:
+          # should exclude these specs
+          SKIP_SPEC: 'cypress/e2e/spec-b.cy.js,cypress/e2e/spec-e.cy.js'
+          SPLIT: 2
+          SPLIT_INDEX: 0
+          DEBUG: 'cypress-split'
+
   release:
     if: github.ref == 'refs/heads/main'
     needs:
       [
+        test-skipped-specs,
         test-unit,
         test-empty,
         test-split,
