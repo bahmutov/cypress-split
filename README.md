@@ -125,6 +125,14 @@ command: npx cypress run --env split=true
 
 See the full example in [bahmutov/cypress-split-example](https://github.com/bahmutov/cypress-split-example)
 
+### Buildkit
+
+```yml
+npx cypress run --env split=true
+```
+
+The script uses `BUILDKITE_PARALLEL_JOB_COUNT` and `BUILDKITE_PARALLEL_JOB` environment variables.
+
 ### GitHub Actions
 
 ```yml
