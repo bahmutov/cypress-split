@@ -45,6 +45,10 @@ function parseSplitInputs(env = {}, configEnv = {}) {
       // GitLabCI index starts with 1
       // convert it to zero base
       SPLIT_INDEX = Number(env.CI_NODE_INDEX) - 1
+    } else if (env.BUILDKITE) {
+      ciName = 'Buildkite'
+      SPLIT = env.BUILDKITE_PARALLEL_JOB_COUNT
+      SPLIT_INDEX = env.BUILDKITE_PARALLEL_JOB
     } else {
       throw new Error('Do not know how to determine the correct split')
     }
