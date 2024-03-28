@@ -5,11 +5,12 @@
 const arg = require('arg')
 const debug = require('debug')('cypress-split')
 const label = 'cypress-split-preview'
-const { version } = require('../package.json')
+const { version, homepage } = require('../package.json')
 const { getSpecsToSplit } = require('../src/parse-inputs')
 const { splitSpecsLogic } = require('../src/utils')
 
 console.log('%s Version %s', label, version)
+console.log('%s Homepage %s', label, homepage)
 
 const args = arg({
   '--split': Number,
