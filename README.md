@@ -414,6 +414,12 @@ $ npx cypress run --env split=2,splitIndex=1,spec="spec1,spec2,spec3"
 $ npx cypress run --env split=true,spec="spec1,spec2,spec3"
 ```
 
+Inside the `SPEC=....` value you can use wildcards, for example to run all specs inside a subfolder
+
+```
+$ SPEC="cypress/e2e/featureA/*.cy.js" npx cypress run --spec "cypress/e2e/featureA/*.cy.js"
+```
+
 **Important:** if you are passing the list of specs using `--env spec="..."` and get the error `Cannot parse as valid JSON`, switch to using `SPEC` environment variable, see [#79](https://github.com/bahmutov/cypress-split/issues/79).
 
 ```

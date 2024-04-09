@@ -106,6 +106,12 @@ function getSpecsToSplit(env = {}, config) {
         return path.resolve(specFilename)
       })
     // all resolved absolute spec filenames
+    debug(
+      'resolving %d specs "%s"',
+      possiblePatterns.length,
+      possiblePatterns.join(','),
+    )
+
     const specs = []
     possiblePatterns.forEach((pattern) => {
       if (pattern.includes('*')) {
