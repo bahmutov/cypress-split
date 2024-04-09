@@ -3,6 +3,7 @@ const debug = require('debug')('cypress-split')
 const path = require('path')
 const { getSpecs } = require('find-cypress-specs')
 const globby = require('globby')
+const { createShuffle } = require('fast-shuffle')
 
 function parseSplitInputs(env = {}, configEnv = {}) {
   let SPLIT = env.SPLIT || configEnv.split || configEnv.SPLIT
@@ -94,6 +95,14 @@ function getSpecsToSplit(env = {}, config) {
     }
   }
 
+  let splitRandomSeed = null
+  if (env.SPLIT_RANDOM_SEED) {
+    splitRandomSeed = Number(env.SPLIT_RANDOM_SEED)
+    debug('found random seed %d', splitRandomSeed)
+  }
+
+  let foundSpecs
+
   // potentially a list of files to run / split
   let SPEC = env.SPEC || config?.env?.spec || config?.env?.SPEC
   if (typeof SPEC === 'string' && SPEC) {
@@ -134,7 +143,8 @@ function getSpecsToSplit(env = {}, config) {
         skipSpecs.length,
       )
     }
-    return specs.filter((spec) => !skipSpecs.includes(spec))
+
+    foundSpecs = specs
   } else {
     const returnAbsolute = true
     const specs = getSpecs(config, undefined, returnAbsolute)
@@ -146,8 +156,21 @@ function getSpecsToSplit(env = {}, config) {
         skipSpecs.length,
       )
     }
-    return specs.filter((spec) => !skipSpecs.includes(spec))
+    foundSpecs = specs
   }
+
+  debug('skipping %d specs', skipSpecs.length)
+  const filteredSpecs = foundSpecs.filter((spec) => !skipSpecs.includes(spec))
+
+  if (splitRandomSeed) {
+    debug('shuffling specs using random seed %d', splitRandomSeed)
+    // shuffle the specs using the random seed
+    const shuffleSpecs = createShuffle(splitRandomSeed)
+    const shuffledSpecs = shuffleSpecs(filteredSpecs)
+    return shuffledSpecs
+  }
+
+  return filteredSpecs
 }
 
 module.exports = { parseSplitInputs, getSpecsToSplit }

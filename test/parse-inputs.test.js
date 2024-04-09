@@ -63,3 +63,18 @@ test('getSpecsToSplit spec pattern with subfolder wildcards', (t) => {
     'cypress/e2e/spec-e.cy.js',
   ])
 })
+
+test('getSpecsToSplit with random seed shuffle', (t) => {
+  const specs = getSpecsToSplit({
+    SPEC: 'cypress/**/spec-*.cy.js',
+    SPLIT_RANDOM_SEED: '11',
+  })
+  const relativeSpecs = toRelative(specs)
+  t.deepEqual(relativeSpecs, [
+    'cypress/e2e/spec-d.cy.js',
+    'cypress/e2e/spec-e.cy.js',
+    'cypress/e2e/spec-b.cy.js',
+    'cypress/e2e/spec-c.cy.js',
+    'cypress/e2e/spec-a.cy.js',
+  ])
+})

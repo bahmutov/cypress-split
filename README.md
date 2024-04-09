@@ -452,6 +452,18 @@ SPEC="cypress/e2e/**/*.cy.js" npx cypress run --spec "cypress/e2e/**/*.cy.js"
 npx cypress run --spec "cypress/e2e/**/*.cy.js" --env spec="cypress/e2e/**/*.cy.js"
 ```
 
+## Random shuffle
+
+You can shuffle the found specs before splitting using a stable seed
+
+```
+$ SPLIT_RANDOM_SEED=42 npx cypress run ...
+```
+
+This is useful to randomize the order of specs to find any dependencies between the tests.
+
+**Note:** all parallel machines usually compute the list of specs, thus the seed must be the same to guarantee the same list is generated and split correctly, otherwise some specs would be "lost".
+
 ## Relative specs output
 
 If `cypress-split` has `SPLIT` and the index and finds the specs, it sets the list of specs in the `config` object
