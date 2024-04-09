@@ -16,6 +16,9 @@ const label = 'cypress-split:'
 
 const isDefined = (x) => typeof x !== 'undefined'
 
+const hasSpecPassed = (specResult) =>
+  specResult.stats.passes > 0 && specResult.stats.failures === 0
+
 /**
  * Initialize Cypress split plugin using Cypress "on" and "config" arguments.
  * @param {Cypress.PluginEvents} on Cypress "on" event registration
@@ -120,6 +123,8 @@ function cypressSplit(on, config) {
     debug(splitSpecs)
 
     const addSpecResults = () => {
+      let chunkPassed = true
+
       // at this point, the specAbsoluteToRelative object should be filled
       const specRows = splitSpecs.map((absoluteSpecPath, k) => {
         const relativeName = specAbsoluteToRelative[absoluteSpecPath]
@@ -140,6 +145,9 @@ function cypressSplit(on, config) {
             specDuration,
             humanSpecDuration,
           )
+          const specPassed = hasSpecPassed(specResult)
+          chunkPassed = chunkPassed && specPassed
+
           // have to convert numbers to strings
           specRow.push(String(specResult.stats.passes))
           specRow.push(String(specResult.stats.failures))
@@ -153,7 +161,7 @@ function cypressSplit(on, config) {
         return specRow
       })
 
-      return specRows
+      return { specRows, chunkPassed }
     }
 
     on('after:run', () => {
@@ -165,8 +173,7 @@ function cypressSplit(on, config) {
             const relativeName = specAbsoluteToRelative[absoluteSpecPath]
             const specResult = specResults[absoluteSpecPath]
             if (specResult) {
-              const passed =
-                specResult.stats.passes > 0 && specResult.stats.failures === 0
+              const passed = hasSpecPassed(specResult)
               const allPending =
                 specResult.stats.tests === specResult.stats.pending
               debug({ relativeName, passed, allPending })
@@ -264,15 +271,16 @@ function cypressSplit(on, config) {
         // because GH does not show the summary before the job finishes
         // so we might as well wait for all spec results to come in
         if (process.env.GITHUB_ACTIONS) {
-          const specRows = addSpecResults()
+          const { specRows, chunkPassed } = addSpecResults()
+
+          const chunkEmoji = chunkPassed ? '✅' : '❌'
+          const chunkHeading = `${label} chunk ${splitIndex + 1} of ${splitN} (${
+            splitSpecs.length
+          } ${splitSpecs.length === 1 ? 'spec' : 'specs'}) ${chunkEmoji}`
 
           // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
           ghCore.summary
-            .addHeading(
-              `${label} chunk ${splitIndex + 1} of ${splitN} (${
-                splitSpecs.length
-              } ${splitSpecs.length === 1 ? 'spec' : 'specs'})`,
-            )
+            .addHeading(chunkHeading)
             .addTable([
               [
                 { data: 'K', header: true },
