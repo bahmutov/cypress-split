@@ -29,6 +29,7 @@
     "demo-merge": "node ./bin/merge --parent-folder examples/split-times --split-file timings.json --output out-timings.json",
     "demo-preview": "node ./bin/preview --split 2",
     "demo-preview-spec": "SPEC=\"cypress/e2e/spec*.cy.js\" node ./bin/preview --split 2",
+    "demo-preview-shuffle": "SPLIT_RANDOM_SEED=42 node ./bin/preview --split 2",
     "unit": "ava test/*.test.js",
     "unit:watch": "ava --watch test/*.test.js"
   },
@@ -53,6 +54,7 @@
     "arg": "^5.0.2",
     "console.table": "^0.10.0",
     "debug": "^4.3.4",
+    "fast-shuffle": "^6.1.0",
     "find-cypress-specs": "1.43.1",
     "globby": "^11.1.0",
     "humanize-duration": "^3.28.0"

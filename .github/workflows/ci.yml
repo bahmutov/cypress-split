@@ -85,6 +85,26 @@ jobs:
           SPLIT_INDEX: ${{ strategy.job-index }}
           DEBUG: 'cypress-split'
 
+  test-random-order:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2]
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Run random order Cypress E2E tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v6
+        # using operating system process environment variables
+        env:
+          SPLIT_RANDOM_SEED: 42
+          SPLIT: ${{ strategy.job-total }}
+          SPLIT_INDEX: ${{ strategy.job-index }}
+          DEBUG: 'cypress-split'
+
   test-subfolder:
     runs-on: ubuntu-22.04
     steps:
@@ -329,6 +349,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs:
       [
+        test-random-order,
         test-skipped-specs,
         test-unit,
         test-empty,
