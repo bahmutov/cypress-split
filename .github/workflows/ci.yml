@@ -62,6 +62,29 @@ jobs:
           SPLIT_INDEX: ${{ strategy.job-index }}
           DEBUG: 'cypress-split'
 
+  test-spec-wildcard:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2]
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Run split Cypress E2E tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run demo-preview-spec
+        # using operating system process environment variables
+        env:
+          # confirm we can use wildcards in the SPEC list
+          SPEC: 'cypress/e2e/spec-*.cy.js, cypress/e2e/spec-*.cy.js'
+          SPLIT: ${{ strategy.job-total }}
+          SPLIT_INDEX: ${{ strategy.job-index }}
+          DEBUG: 'cypress-split'
+
   test-subfolder:
     runs-on: ubuntu-22.04
     steps:
@@ -322,6 +345,7 @@ jobs:
         test-pending-tests,
         test-merge-timings,
         test-find-timings-file,
+        test-spec-wildcard,
         preview,
       ]
     runs-on: ubuntu-22.04
