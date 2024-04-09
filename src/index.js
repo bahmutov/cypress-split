@@ -19,6 +19,8 @@ const isDefined = (x) => typeof x !== 'undefined'
 const hasSpecPassed = (specResult) =>
   specResult.stats.passes > 0 && specResult.stats.failures === 0
 
+const hasFailedTests = (specResult) => specResult.stats.failures > 0
+
 /**
  * Initialize Cypress split plugin using Cypress "on" and "config" arguments.
  * @param {Cypress.PluginEvents} on Cypress "on" event registration
@@ -145,7 +147,7 @@ function cypressSplit(on, config) {
             specDuration,
             humanSpecDuration,
           )
-          const specPassed = hasSpecPassed(specResult)
+          const specPassed = !hasFailedTests(specResult)
           chunkPassed = chunkPassed && specPassed
 
           // have to convert numbers to strings
