@@ -172,7 +172,11 @@ function cypressSplit(on, config) {
 
         const specDurations = splitSpecs
           .map((absoluteSpecPath, k) => {
-            const relativeName = specAbsoluteToRelative[absoluteSpecPath]
+            const cwd = process.cwd()
+            const useFix = !!process.env['SPLIT_FIX']
+            const relativeName = useFix
+              ? path.relative(cwd, absoluteSpecPath)
+              : specAbsoluteToRelative[absoluteSpecPath]
             const specResult = specResults[absoluteSpecPath]
             if (specResult) {
               const passed = hasSpecPassed(specResult)

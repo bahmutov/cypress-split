@@ -72,9 +72,10 @@ function splitSpecsLogic({ specs, splitN, splitIndex, splitFileName, label }) {
         previousDurations.length
       const specsWithDurations = specs.map((specName) => {
         const relativeSpec = path.relative(cwd, specName)
-        const foundInfo = previousDurations.find(
-          (item) => item.spec === relativeSpec,
-        )
+        const foundInfo = previousDurations.find((item) => {
+          console.log(`Comparing ${item.spec} with ${relativeSpec}`)
+          return item.spec === relativeSpec
+        })
         if (!foundInfo) {
           return {
             specName,
