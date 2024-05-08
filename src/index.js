@@ -97,7 +97,7 @@ function cypressSplit(on, config) {
       '%s detected %s machine %d of %d',
       label,
       ciName,
-      SPLIT_INDEX,
+      SPLIT_INDEX + 1,
       SPLIT,
     )
   }
