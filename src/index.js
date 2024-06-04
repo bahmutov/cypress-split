@@ -106,8 +106,13 @@ function cypressSplit(on, config) {
     const specs = getSpecsToSplit(process.env, config)
 
     console.log('%s there are %d found specs', label, specs.length)
-    if (specs.length < 10) {
+    if (specs.length < 5) {
       specs.forEach((spec, k) => {
+        console.log('- %d: %s', k + 1, spec)
+      })
+    } else {
+      console.log('the first 5 specs')
+      specs.slice(0, 5).forEach((spec, k) => {
         console.log('- %d: %s', k + 1, spec)
       })
     }
