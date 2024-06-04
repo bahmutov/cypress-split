@@ -375,7 +375,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Semantic Release 🚀
-        uses: cycjimmy/semantic-release-action@v3
+        # https://github.com/cycjimmy/semantic-release-action
+        uses: cycjimmy/semantic-release-action@v4
         with:
           branch: main
         env:
