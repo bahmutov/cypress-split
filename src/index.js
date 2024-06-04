@@ -344,6 +344,7 @@ function cypressSplit(on, config) {
         tempFilename,
       )
       config.specPattern = tempFilename
+      debug('set spec pattern to "%s"', config.specPattern)
     }
 
     return config
