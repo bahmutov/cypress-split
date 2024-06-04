@@ -106,6 +106,11 @@ function cypressSplit(on, config) {
     const specs = getSpecsToSplit(process.env, config)
 
     console.log('%s there are %d found specs', label, specs.length)
+    if (specs.length < 10) {
+      specs.forEach((spec, k) => {
+        console.log('- %d: %s', k + 1, spec)
+      })
+    }
     // console.log(specs)
     const splitN = Number(SPLIT)
     const splitIndex = Number(SPLIT_INDEX)
