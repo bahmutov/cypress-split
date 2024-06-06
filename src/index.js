@@ -24,9 +24,10 @@ const hasFailedTests = (specResult) => specResult.stats.failures > 0
 /**
  * Initialize Cypress split plugin using Cypress "on" and "config" arguments.
  * @param {Cypress.PluginEvents} on Cypress "on" event registration
- * @param {Cypress.Config} config Cypress config object
+ * @param {Cypress.PluginConfigOptions} config Cypress config object
+ * @param {((specs: string[]) => string[]) | undefined} userSpecOrderFn Custom function to order the specs. The list of specs has absolute filenames.
  */
-function cypressSplit(on, config) {
+function cypressSplit(on, config, userSpecOrderFn = undefined) {
   // maybe the user called this function with a single argument
   // then we assume it is the config object
   if (arguments.length === 1) {
@@ -131,14 +132,30 @@ function cypressSplit(on, config) {
       label,
     })
 
-    debug('split specs')
-    debug(splitSpecs)
+    let batchSpecs
+    if (userSpecOrderFn) {
+      debug(
+        'calling the user spec order function with %d specs',
+        splitSpecs.length,
+      )
+      batchSpecs = userSpecOrderFn(splitSpecs)
+      if (!Array.isArray(batchSpecs)) {
+        throw new Error(
+          'The user spec order function must return an array of spec filenames',
+        )
+      }
+    } else {
+      batchSpecs = splitSpecs
+    }
+
+    debug('split specs batch')
+    debug(batchSpecs)
 
     const addSpecResults = () => {
       let chunkPassed = true
 
       // at this point, the specAbsoluteToRelative object should be filled
-      const specRows = splitSpecs.map((absoluteSpecPath, k) => {
+      const specRows = batchSpecs.map((absoluteSpecPath, k) => {
         const relativeName = specAbsoluteToRelative[absoluteSpecPath]
         const specRow = [String(k + 1), relativeName || absoluteSpecPath]
 
@@ -180,7 +197,7 @@ function cypressSplit(on, config) {
       if (SPLIT_FILE) {
         console.log('%s here are passing spec timings', label)
 
-        const specDurations = splitSpecs
+        const specDurations = batchSpecs
           .map((absoluteSpecPath, k) => {
             const relativeName = specAbsoluteToRelative[absoluteSpecPath]
             const specResult = specResults[absoluteSpecPath]
@@ -287,8 +304,8 @@ function cypressSplit(on, config) {
 
           const chunkEmoji = chunkPassed ? '✅' : '❌'
           const chunkHeading = `${label} chunk ${splitIndex + 1} of ${splitN} (${
-            splitSpecs.length
-          } ${splitSpecs.length === 1 ? 'spec' : 'specs'}) ${chunkEmoji}`
+            batchSpecs.length
+          } ${batchSpecs.length === 1 ? 'spec' : 'specs'}) ${chunkEmoji}`
 
           // https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
           ghCore.summary
@@ -314,21 +331,21 @@ function cypressSplit(on, config) {
       }
     })
 
-    if (splitSpecs.length) {
+    if (batchSpecs.length) {
       debug('setting the spec pattern to')
-      debug(splitSpecs)
+      debug(batchSpecs)
       // if working with Cypress v9, there is integration folder
       // @ts-ignore
       if (config.integrationFolder) {
         debug('setting test files')
         // @ts-ignore
-        config.testFiles = splitSpecs.map((name) =>
+        config.testFiles = batchSpecs.map((name) =>
           // @ts-ignore
           path.relative(config.integrationFolder, name),
         )
       } else {
         // Cypress v10+
-        config.specPattern = splitSpecs
+        config.specPattern = batchSpecs
       }
     } else {
       // copy the empty spec file from our source folder into temp folder

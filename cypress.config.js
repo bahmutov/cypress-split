@@ -1,3 +1,4 @@
+// @ts-check
 const { defineConfig } = require('cypress')
 const cypressSplit = require('./src')
 
@@ -8,7 +9,12 @@ module.exports = defineConfig({
     fixturesFolder: false,
     excludeSpecPattern: '*.hot-update.js',
     setupNodeEvents(on, config) {
-      cypressSplit(on, config)
+      const orderSpecs = (specs) => {
+        specs.sort().reverse()
+        return specs
+      }
+
+      cypressSplit(on, config, orderSpecs)
       // IMPORTANT: return the config object
       return config
     },
