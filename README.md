@@ -21,6 +21,7 @@
   - [Lesson b6: Split specs from one subfolder](https://cypress.tips/courses/cypress-split/lessons/b6)
   - [Lesson b7: Split across 2 dimensions](https://cypress.tips/courses/cypress-split/lessons/b7)
   - [Lesson b8: Split across N dimensions](https://cypress.tips/courses/cypress-split/lessons/b8)
+  - [Lesson c1: Control the order of specs](https://cypress.tips/courses/cypress-split/lessons/c1)
 - 🎓 Partially covered in my course [Cypress Plugins](https://cypress.tips/courses/cypress-plugins)
   - [Lesson m1: Run spec files in parallel using GitHub Actions](https://cypress.tips/courses/cypress-plugins/lessons/m1)
   - [Lesson m2: Run Cypress specs in parallel on CircleCI](https://cypress.tips/courses/cypress-plugins/lessons/m2)
