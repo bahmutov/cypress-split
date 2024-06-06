@@ -120,7 +120,7 @@ function splitSpecsLogic({ specs, splitN, splitIndex, splitFileName, label }) {
     splitSpecs = getChunk(specs, splitN, splitIndex)
     printSpecsList(splitSpecs)
   }
-  debug('split specs')
+  debug('split specs %d batch %d', splitN, splitIndex + 1)
   debug(splitSpecs)
   return { splitSpecs, foundSplitFile }
 }

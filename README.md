@@ -303,6 +303,32 @@ See example [bahmutov/cypress-split-timings-example](https://github.com/bahmutov
 
 **Note 2:** during Cypress execution, the working directory is set to the folder with the Cypress config file. This module tries its best to find the split file by searching the parent folders to the Git repo or root folder.
 
+## Adjust the specs
+
+Typically you want to find all specs and split them into chunks. But you can adjust the final list of specs using your own callback function.
+
+```js
+// the specs is the list of specs
+// determined by the split algorithm
+function adjustTheSpecs(specs) {
+  // for example, reverse the order of specs
+  specs.reveres()
+  return specs
+}
+
+module.exports = defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {
+      cypressSplit(on, config, adjustTheSpecs)
+      // IMPORTANT: return the config object
+      return config
+    },
+  },
+})
+```
+
+Using your own callback function you can insert new specs to run at the beginning or run the specs in certain custom order, etc. Make sure the returned value is an array of absolute spec paths.
+
 ## Preview
 
 You can see how this plugin is going to split the specs using the `cypress-split-preview` alias
