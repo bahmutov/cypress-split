@@ -55,7 +55,7 @@
     "console.table": "^0.10.0",
     "debug": "^4.3.4",
     "fast-shuffle": "^6.1.0",
-    "find-cypress-specs": "1.43.4",
+    "find-cypress-specs": "1.43.6",
     "globby": "^11.1.0",
     "humanize-duration": "^3.28.0"
   },
