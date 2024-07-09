@@ -8,6 +8,7 @@ interface CypressSplit {
   (
     on: Cypress.PluginEvents,
     config: Cypress.PluginConfigOptions,
+    userSpecOrderFn?: ((specs: string[]) => string[]) 
   ): void;
 }
 declare var cypressSplit: CypressSplit
