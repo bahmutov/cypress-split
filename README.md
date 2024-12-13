@@ -371,6 +371,16 @@ $ npx cypress run --env splitFile=timings.json,splitOutputFile=output.json
 
 To skip GitHub Actions summary, set an environment variable `SPLIT_SUMMARY=false`. By default, this plugin generates the summary.
 
+```yml
+- name: No GH Action summary output
+  uses: cypress-io/github-action@v6
+  env:
+    SPLIT: 2
+    SPLIT_INDEX: 1
+    # do not write summary to github
+    SPLIT_SUMMARY: false
+```
+
 ## Split component specs
 
 Works the same way as splitting E2E specs. Add this plugin to the `setupNodeEvents` callback in the `component` object in the config. See [cypress.config.js](./cypress.config.js) for example:
