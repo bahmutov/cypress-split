@@ -63,8 +63,8 @@
     "ava": "^6.1.0",
     "cypress": "^13.3.0",
     "prettier": "^3.0.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "semantic-release": "^24.1.2",
     "vite": "^5.0.0"
   }
