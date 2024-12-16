@@ -377,7 +377,22 @@ To skip GitHub Actions summary, set an environment variable `SPLIT_SUMMARY=false
   env:
     SPLIT: 2
     SPLIT_INDEX: 1
-    # do not write summary to github
+    # do not write cypress-split summary to github
+    SPLIT_SUMMARY: false
+```
+
+**Note:** this plugin's summary is _different_ from [cypress-io/github-action](https://github.com/cypress-io/github-action) own action summary. You can [suppress both](https://github.com/cypress-io/github-action?tab=readme-ov-file#suppress-job-summary):
+
+```yml
+- name: No GH Action summary output
+  uses: cypress-io/github-action@v6
+  with:
+    # do not write Cypress GH action summary
+    publish-summary: false
+  env:
+    SPLIT: 2
+    SPLIT_INDEX: 1
+    # do not write cypress-split summary to github
     SPLIT_SUMMARY: false
 ```
 
