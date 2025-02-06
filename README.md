@@ -3,6 +3,9 @@
 > Split Cypress specs across parallel CI machines for speed
 > without using any external services
 
+> [!TIP]
+> I already implemented the parallelization with your plugin… this is magic ✨ - Alina Dzhepparova
+
 ![Detailed plugin output on GitHub Actions](./images/details.png)
 
 - 🎓 Fully covered in my course [Cypress-split Plugin](https://cypress.tips/courses/cypress-split)
