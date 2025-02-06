@@ -83,7 +83,7 @@ function cypressSplit(on, config, userSpecOrderFn = undefined) {
     specAbsoluteToRelative[absoluteSpecPath] = spec.relative
   })
 
-  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, ciName } =
+  let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, SPLIT_ALL_TIMINGS, ciName } =
     parseSplitInputs(process.env, config.env)
 
   if (SPLIT_FILE) {
@@ -207,7 +207,7 @@ function cypressSplit(on, config, userSpecOrderFn = undefined) {
                 specResult.stats.tests === specResult.stats.pending
               debug({ relativeName, passed, allPending })
 
-              if (passed || allPending) {
+              if (SPLIT_ALL_TIMINGS === 'true' || SPLIT_ALL_TIMINGS === true || passed || allPending) {
                 const duration = Math.round(
                   specResult.stats.duration ||
                     specResult.stats.wallClockDuration,

@@ -11,6 +11,7 @@ function parseSplitInputs(env = {}, configEnv = {}) {
   let SPLIT_FILE = env.SPLIT_FILE || configEnv.splitFile
   let SPLIT_OUTPUT_FILE =
     env.SPLIT_OUTPUT_FILE || configEnv.splitOutputFile || SPLIT_FILE
+  let SPLIT_ALL_TIMINGS = env.SPLIT_ALL_TIMINGS || configEnv.splitAllTimings || false
 
   // some CI systems like TeamCity provide agent index starting with 1
   // let's check for SPLIT_INDEX1 and if it is set,
@@ -55,7 +56,7 @@ function parseSplitInputs(env = {}, configEnv = {}) {
     }
   }
 
-  return { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, ciName }
+  return { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, SPLIT_ALL_TIMINGS, ciName }
 }
 
 /**
