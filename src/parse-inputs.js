@@ -5,6 +5,18 @@ const { getSpecs } = require('find-cypress-specs')
 const globby = require('globby')
 const { createShuffle } = require('fast-shuffle')
 
+/**
+ * @typedef {Object} ParsedSplitInputs
+ * @property {number} SPLIT
+ * @property {number} SPLIT_INDEX
+ * @property {string|undefined} SPLIT_FILE
+ * @property {string|undefined} SPLIT_OUTPUT_FILE
+ * @property {string|undefined} ciName
+ */
+
+/**
+ * @returns {ParsedSplitInputs}
+ */
 function parseSplitInputs(env = {}, configEnv = {}) {
   let SPLIT = env.SPLIT || configEnv.split || configEnv.SPLIT
   let SPLIT_INDEX = env.SPLIT_INDEX || configEnv.splitIndex
@@ -53,6 +65,14 @@ function parseSplitInputs(env = {}, configEnv = {}) {
     } else {
       throw new Error('Do not know how to determine the correct split')
     }
+  }
+
+  // convert values that should be numbers
+  if (typeof SPLIT === 'string') {
+    SPLIT = Number(SPLIT)
+  }
+  if (typeof SPLIT_INDEX === 'string') {
+    SPLIT_INDEX = Number(SPLIT_INDEX)
   }
 
   return { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, ciName }

@@ -1,11 +1,21 @@
 const test = require('ava')
 const path = require('path')
-const { getSpecsToSplit } = require('../src/parse-inputs')
+const { getSpecsToSplit, parseSplitInputs } = require('../src/parse-inputs')
 
 function toRelative(filenames) {
   const cwd = process.cwd()
   return filenames.map((filename) => path.relative(cwd, filename))
 }
+
+test('parseSplitInputs converts strings to numbers', (t) => {
+  const inputs = parseSplitInputs({
+    SPLIT: '1',
+    SPLIT_INDEX: '2',
+  })
+
+  t.is(inputs.SPLIT, 1)
+  t.is(inputs.SPLIT_INDEX, 2)
+})
 
 test('getSpecsToSplit spec pattern', (t) => {
   const specs = getSpecsToSplit({

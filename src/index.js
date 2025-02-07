@@ -194,7 +194,7 @@ function cypressSplit(on, config, userSpecOrderFn = undefined) {
     }
 
     on('after:run', () => {
-      if (SPLIT_FILE) {
+      if (SPLIT_FILE && SPLIT_OUTPUT_FILE) {
         console.log('%s here are passing spec timings', label)
 
         const specDurations = batchSpecs
