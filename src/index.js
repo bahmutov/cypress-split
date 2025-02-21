@@ -58,6 +58,23 @@ function cypressSplit(on, config, userSpecOrderFn = undefined) {
   const specAbsoluteToRelative = {}
 
   on('after:spec', (spec, results) => {
+    // be defensive about the results
+    if (!results) {
+      console.error('cypress-split: Missing results for %s', spec.relative)
+      return
+    }
+    if (!results.stats) {
+      console.error('cypress-split: Missing stats for %s', spec.relative)
+      return
+    }
+    if (!('failures' in results.stats)) {
+      console.error('cypress-split: Missing failures for %s', spec.relative)
+      return
+    }
+    if (!('passes' in results.stats)) {
+      console.error('cypress-split: Missing passes for %s', spec.relative)
+      return
+    }
     // console.log(results, results)
 
     const passed = results.stats.failures === 0 && results.stats.passes > 0
