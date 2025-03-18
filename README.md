@@ -358,6 +358,8 @@ npx cypress-split-merge \
 
 The above command finds all `timings.json` file in the sub folders of `partials/` folder and merges them. It saved the result to `out-timings.json` file and if running on GitHub Actions sets the job output named `merged-timing` to a stringified single line JSON line.
 
+Merging timings files when running on multiple machines in parallel depends on each CI provider. For example, if you use GitHub Actions, you need to upload each timings file at the end of the test job, then download all artifacts and grab all timings files to merge in a separate job. You can find an example of such workflow in my repository [bahmutov/cypress-workflows](https://github.com/bahmutov/cypress-workflows/blob/main/.github/workflows/split.yml). You can find another example of merging JSON files from downloaded GitHub Actions artifacts in [bahmutov/cypress-visited-urls-example](https://github.com/bahmutov/cypress-visited-urls-example/blob/main/.github/workflows/ci.yml).
+
 ## Write Timings to a Separate File
 
 You can also indicate where the plugin should output the timings, by setting the `SPLIT_OUTPUT_FILE` environment variable or the corresponding Cypress `env` variable. This will specify the file where the timings will be written. If `SPLIT_OUTPUT_FILE` is not set, the plugin will default to using the same file specified in `SPLIT_FILE`.
