@@ -46,6 +46,7 @@
 - 📝 [Cypress GitHub Actions Slash Command](https://glebbahmutov.com/blog/cypress-slash-command/)
 - 📝 [Run Cypress Specs In Parallel For Free Using Spec Timings](https://glebbahmutov.com/blog/cypress-parallel-free-based-on-timings/)
 - 📝 [Quickly Run The Changed Specs on GitHub Actions](https://glebbahmutov.com/blog/quick-changed-specs/)
+- 📝 [Run Changed Cypress Specs On CI First](https://glebbahmutov.com/blog/run-changed-specs-first/)
 
 ## Videos
 
