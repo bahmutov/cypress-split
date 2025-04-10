@@ -37,6 +37,8 @@
   - [Bonus 29: Combine the code coverage from split E2E test jobs](https://cypress.tips/courses/swag-store/lessons/bonus29)
   - [Bonus 30: Split the component specs](https://cypress.tips/courses/swag-store/lessons/bonus30)
   - [Bonus 31: A single workflow with combined code coverage](https://cypress.tips/courses/swag-store/lessons/bonus31)
+- 🎓 Covered in my course [Cypress-split Plugin](https://cypress.tips/courses/cypress-split)
+  - [Lesson c2: Combine split and grep](https://cypress.tips/courses/cypress-split/lessons/c2)
 
 ## Blog posts
 
