@@ -77,3 +77,54 @@ it('takes existing values', () => {
     ],
   })
 })
+
+it('sorts entries', () => {
+  const timings1 = {
+    durations: [
+      {
+        spec: 'cypress/e2e/spec-a.cy.js',
+        duration: 100,
+      },
+      {
+        spec: 'cypress/e2e/spec-c.cy.js',
+        duration: 300,
+      },
+    ],
+  }
+
+  const timings2 = {
+    durations: [
+      {
+        spec: 'cypress/e2e/spec-d.cy.js',
+        duration: 400,
+      },
+      {
+        spec: 'cypress/e2e/spec-b.cy.js',
+        duration: 200,
+      },
+    ],
+  }
+
+  const merged = mergeSplitTimings([timings1, timings2])
+  // the result has sorted entries
+  expect(merged).to.deep.equal({
+    durations: [
+      {
+        spec: 'cypress/e2e/spec-a.cy.js',
+        duration: 100,
+      },
+      {
+        spec: 'cypress/e2e/spec-b.cy.js',
+        duration: 200,
+      },
+      {
+        spec: 'cypress/e2e/spec-c.cy.js',
+        duration: 300,
+      },
+      {
+        spec: 'cypress/e2e/spec-d.cy.js',
+        duration: 400,
+      },
+    ],
+  })
+})
