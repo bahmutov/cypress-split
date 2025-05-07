@@ -72,6 +72,15 @@ function hasTimeDifferences(
 }
 
 /**
+ * Sort durations by spec file.
+ * @param {object[]} durations Unsorted durations
+ * @returns {object[]} Sorted durations
+ */
+function sortDurations(durations) {
+  return durations.sort((a, b) => a.spec.localeCompare(b.spec))
+}
+
+/**
  * Merge previous timings with possible new or changed timings
  * into a new object to be saved.
  * @param {object} prevTimings JSON loaded from the timings file
@@ -88,7 +97,7 @@ function mergeTimings(prevTimings, currTimings) {
       merged.durations.push(item)
     }
   })
-  merged.durations.sort((a, b) => a.spec.localeCompare(b.spec))
+  merged.durations = sortDurations(merged.durations)
   return merged
 }
 
@@ -129,6 +138,8 @@ function mergeSplitTimings(timings, debug = noop) {
       duration: specResults[spec],
     })
   })
+
+  result.durations = sortDurations(result.durations)
 
   return result
 }
