@@ -1,12 +1,16 @@
 {
   "durations": [
     {
-      "spec": "cypress/e2e/chunks.cy.js",
-      "duration": 230
+      "spec": "cypress/e2e/spec-b.cy.js",
+      "duration": 200
     },
     {
-      "spec": "cypress/e2e/timings.cy.js",
-      "duration": 102
+      "spec": "cypress/e2e/spec-d.cy.js",
+      "duration": 400
+    },
+    {
+      "spec": "cypress/e2e/spec-a.cy.js",
+      "duration": 111
     }
   ]
 }

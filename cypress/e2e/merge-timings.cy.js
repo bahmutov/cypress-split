@@ -4,7 +4,7 @@ const { mergeSplitTimings } = require('../../src/timings')
 
 chai.config.truncateThreshold = 500
 
-it('averages the durations', () => {
+it('averages and rounds the durations', () => {
   const timings1 = {
     durations: [
       {
@@ -21,7 +21,7 @@ it('averages the durations', () => {
     durations: [
       {
         spec: 'cypress/integration/A.ts',
-        duration: 80,
+        duration: 111,
       },
       {
         spec: 'cypress/integration/B.ts',
@@ -35,7 +35,7 @@ it('averages the durations', () => {
     durations: [
       {
         spec: 'cypress/integration/A.ts',
-        duration: 90,
+        duration: 106,
       },
       {
         spec: 'cypress/integration/B.ts',
@@ -73,6 +73,57 @@ it('takes existing values', () => {
       {
         spec: 'cypress/integration/B.ts',
         duration: 20,
+      },
+    ],
+  })
+})
+
+it('sorts entries', () => {
+  const timings1 = {
+    durations: [
+      {
+        spec: 'cypress/e2e/spec-a.cy.js',
+        duration: 100,
+      },
+      {
+        spec: 'cypress/e2e/spec-c.cy.js',
+        duration: 300,
+      },
+    ],
+  }
+
+  const timings2 = {
+    durations: [
+      {
+        spec: 'cypress/e2e/spec-d.cy.js',
+        duration: 400,
+      },
+      {
+        spec: 'cypress/e2e/spec-b.cy.js',
+        duration: 200,
+      },
+    ],
+  }
+
+  const merged = mergeSplitTimings([timings1, timings2])
+  // the result has sorted entries
+  expect(merged).to.deep.equal({
+    durations: [
+      {
+        spec: 'cypress/e2e/spec-a.cy.js',
+        duration: 100,
+      },
+      {
+        spec: 'cypress/e2e/spec-b.cy.js',
+        duration: 200,
+      },
+      {
+        spec: 'cypress/e2e/spec-c.cy.js',
+        duration: 300,
+      },
+      {
+        spec: 'cypress/e2e/spec-d.cy.js',
+        duration: 400,
       },
     ],
   })
