@@ -115,7 +115,7 @@ function mergeSplitTimings(timings, debug = noop) {
       } else {
         // average the durations
         const maxDuration = (item.duration + specResults[item.spec]) / 2
-        specResults[item.spec] = maxDuration
+        specResults[item.spec] = Math.round(maxDuration)
       }
     })
   })
