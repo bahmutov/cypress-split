@@ -4,7 +4,7 @@ const { mergeSplitTimings } = require('../../src/timings')
 
 chai.config.truncateThreshold = 500
 
-it('averages the durations', () => {
+it('averages and rounds the durations', () => {
   const timings1 = {
     durations: [
       {
@@ -21,7 +21,7 @@ it('averages the durations', () => {
     durations: [
       {
         spec: 'cypress/integration/A.ts',
-        duration: 80,
+        duration: 111,
       },
       {
         spec: 'cypress/integration/B.ts',
@@ -35,7 +35,7 @@ it('averages the durations', () => {
     durations: [
       {
         spec: 'cypress/integration/A.ts',
-        duration: 90,
+        duration: 106,
       },
       {
         spec: 'cypress/integration/B.ts',
