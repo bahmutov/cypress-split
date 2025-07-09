@@ -206,7 +206,7 @@ jobs:
           # do not write summary to github
           SPLIT_SUMMARY: false
 
-  test-empty:
+  check-dependencies:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout 🛎
@@ -216,6 +216,17 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           build: npm run deps
+          runTests: false
+
+  test-empty:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+      - name: Run an empty Cypress split 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v6
+        with:
           command: npm run empty
 
   test-user-spec-list:
@@ -368,6 +379,7 @@ jobs:
         test-find-timings-file,
         test-spec-wildcard,
         preview,
+        check-dependencies,
       ]
     runs-on: ubuntu-22.04
     steps:
