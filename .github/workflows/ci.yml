@@ -7,7 +7,7 @@ permissions:
 jobs:
   # example splitting all tests across GitHub machines
   prepare:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     # explicitly set the output of this job
     # so that other jobs can use it
     outputs:
@@ -25,7 +25,7 @@ jobs:
         run: echo '${{ steps.prepare.outputs.matrix }}'
 
   test-unit:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -41,7 +41,7 @@ jobs:
 
   # two jobs that split 2 explicit specs
   test-spec:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -63,7 +63,7 @@ jobs:
           DEBUG: 'cypress-split'
 
   test-spec-wildcard:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -86,7 +86,7 @@ jobs:
           DEBUG: 'cypress-split'
 
   test-random-order:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -106,7 +106,7 @@ jobs:
           DEBUG: 'cypress-split'
 
   test-subfolder:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -121,7 +121,7 @@ jobs:
           SPLIT_INDEX: 0
 
   test-merge-timings:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -144,7 +144,7 @@ jobs:
 
   preview:
     needs: prepare
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -164,7 +164,7 @@ jobs:
 
   test-split:
     needs: prepare
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
@@ -190,7 +190,7 @@ jobs:
 
   test-no-summary:
     needs: prepare
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -207,7 +207,7 @@ jobs:
           SPLIT_SUMMARY: false
 
   check-dependencies:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -219,7 +219,7 @@ jobs:
           runTests: false
 
   test-empty:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -230,7 +230,7 @@ jobs:
           command: npm run empty
 
   test-user-spec-list:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -241,7 +241,7 @@ jobs:
           command: npm run user-specs
 
   test-timings:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -252,7 +252,7 @@ jobs:
           command: npm run timings
 
   test-timings-split-output-file:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -265,7 +265,7 @@ jobs:
         run: cat new-timings.json
 
   test-timings-no-file:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -276,7 +276,7 @@ jobs:
           command: npm run timings-no-file
 
   test-find-timings-file:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -293,7 +293,7 @@ jobs:
           SPLIT_FILE: timings.json
 
   test-pending-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -323,7 +323,7 @@ jobs:
 
   # using SPLIT_INDEX1 to start index at 1
   test-index1:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -340,7 +340,7 @@ jobs:
           DEBUG: 'cypress-split'
 
   test-skipped-specs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
@@ -381,7 +381,7 @@ jobs:
         preview,
         check-dependencies,
       ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v5
