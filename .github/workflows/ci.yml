@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install dependencies 🧪
         # https://github.com/cypress-io/github-action
@@ -51,7 +51,7 @@ jobs:
         containers: [1, 2]
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Run split Cypress E2E tests 🧪
         # https://github.com/cypress-io/github-action
@@ -73,7 +73,7 @@ jobs:
         containers: [1, 2]
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Run split Cypress E2E tests 🧪
         # https://github.com/cypress-io/github-action
@@ -96,7 +96,7 @@ jobs:
         containers: [1, 2]
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Run random order Cypress E2E tests 🧪
         # https://github.com/cypress-io/github-action
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Run Cypress E2E tests in the subfolder 🧪
         # https://github.com/cypress-io/github-action
@@ -127,7 +127,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install dependencies 🧪
         uses: cypress-io/github-action@v6
@@ -150,7 +150,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Preview the split 🧪
         # https://github.com/cypress-io/github-action
@@ -173,7 +173,7 @@ jobs:
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Print GitHub variables 🖨
         run: npx @bahmutov/print-env GITHUB
@@ -196,7 +196,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Run some Cypress tests 🧪
         # https://github.com/cypress-io/github-action
@@ -213,7 +213,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Run an empty Cypress split 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -225,7 +225,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Run an empty Cypress split 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -236,7 +236,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Split explicit user list of specs 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -247,7 +247,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Split specs based on timings json file 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -258,7 +258,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Split specs based on timings json file 🧪, write output to different file 🗃️
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -271,7 +271,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Split specs based on non-existent timings json file 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -282,7 +282,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Needs to find the timings file 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -299,7 +299,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Needs to find the timings file 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -329,7 +329,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Run split Cypress E2E tests 🧪
         # https://github.com/cypress-io/github-action
@@ -346,7 +346,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Run split Cypress E2E tests 🧪
         # https://github.com/cypress-io/github-action
@@ -397,7 +397,7 @@ jobs:
         run: node --version
 
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Semantic Release 🚀
         # https://github.com/cycjimmy/semantic-release-action
