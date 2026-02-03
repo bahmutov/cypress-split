@@ -386,6 +386,16 @@ jobs:
       ]
     runs-on: ubuntu-24.04
     steps:
+      - name: Print the default NPM version 📜
+        run: npm --version
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Print NPM version 📜
+        run: npm --version
+
       - name: Checkout 🛎
         uses: actions/checkout@v5
 
