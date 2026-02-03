@@ -1,9 +1,12 @@
 name: ci
 on: push
+
 permissions:
   contents: write
   issues: write
   pull-requests: write
+  id-token: write # Required for OIDC
+
 jobs:
   # example splitting all tests across GitHub machines
   prepare:
@@ -388,9 +391,8 @@ jobs:
 
       - name: Semantic Release 🚀
         # https://github.com/cycjimmy/semantic-release-action
-        uses: cycjimmy/semantic-release-action@v4
+        uses: cycjimmy/semantic-release-action@v6
         with:
           branch: main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
