@@ -33,6 +33,10 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@v6
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
       - name: Install dependencies 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
