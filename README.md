@@ -257,6 +257,11 @@ job3: SPLIT=3 SPLIT_INDEX=2 npx cypress run
 job1: npx cypress run --env split=3,splitIndex=0
 job2: npx cypress run --env split=3,splitIndex=1
 job3: npx cypress run --env split=3,splitIndex=2
+
+# using Cypress expose option
+job1: npx cypress run --expose split=3,splitIndex=0
+job2: npx cypress run --expose split=3,splitIndex=1
+job3: npx cypress run --expose split=3,splitIndex=2
 ```
 
 ### Index starts at 1
@@ -296,6 +301,9 @@ $ SPLIT_FILE=timings.json SPLIT=3 npx cypress run
 
 # the equivalent syntax using Cypress --env argument
 $ npx cypress run --env split=3,splitFile=timings.json
+
+# the equivalent syntax using Cypress --expose argument
+$ npx cypress run --expose split=3,splitFile=timings.json
 ```
 
 For specs not in the timings file, it will use average duration of the known specs. The timings file might not exist, in this case the specs are split by name. At the end of the run, the duration of all run specs is printed and can be saved into the timings JSON file. **Note:** you would need to combine the timings from different runners into a single JSON file yourself.
@@ -373,6 +381,9 @@ $ SPLIT_FILE=timings.json SPLIT_OUTPUT_FILE=output.json npx cypress run
 
 # Or use the Cypress --env option
 $ npx cypress run --env splitFile=timings.json,splitOutputFile=output.json
+
+# Or use the Cypress --expose option
+$ npx cypress run --expose splitFile=timings.json,splitOutputFile=output.json
 ```
 
 ## CI summary
@@ -472,6 +483,10 @@ $ SPEC="spec1,spec2,spec3" SPLIT=2 SPLIT_INDEX=1 npx cypress run --spec "spec1,s
 $ npx cypress run --env split=2,splitIndex=0,spec="spec1,spec2,spec3"
 $ npx cypress run --env split=2,splitIndex=1,spec="spec1,spec2,spec3"
 
+# Using Cypress "expose" option
+$ npx cypress run --expose split=2,splitIndex=0,spec="spec1,spec2,spec3"
+$ npx cypress run --expose split=2,splitIndex=1,spec="spec1,spec2,spec3"
+
 # for CIs with automatically index detection
 $ npx cypress run --env split=true,spec="spec1,spec2,spec3"
 ```
@@ -510,8 +525,12 @@ If your `spec` pattern includes wildcards `*` then they will be resolved using `
 ```
 # split all specs inside the `cypress/e2e` folder
 SPEC="cypress/e2e/**/*.cy.js" npx cypress run --spec "cypress/e2e/**/*.cy.js"
+
 # or the equivalent using --env parameter
 npx cypress run --spec "cypress/e2e/**/*.cy.js" --env spec="cypress/e2e/**/*.cy.js"
+
+# or the equivalent using --expose parameter
+npx cypress run --spec "cypress/e2e/**/*.cy.js" --expose spec="cypress/e2e/**/*.cy.js"
 ```
 
 ## Random shuffle

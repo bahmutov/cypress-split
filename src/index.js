@@ -1,4 +1,4 @@
-/// <reference types="Cypress" />
+/// <reference types="cypress" />
 // @ts-check
 
 const debug = require('debug')('cypress-split')
@@ -46,9 +46,7 @@ function cypressSplit(on, config, userSpecOrderFn = undefined) {
 
   // the user can specify the split flag / numbers
   // using either OS process environment variables
-  // or Cypress env variables
-  debug('Cypress config env')
-  debug(config.env)
+  // or Cypress env variables or Cypress expose variables
   debug('current working directory %s', process.cwd())
   debug('project root folder %s', config.projectRoot)
 
@@ -101,7 +99,7 @@ function cypressSplit(on, config, userSpecOrderFn = undefined) {
   })
 
   let { SPLIT, SPLIT_INDEX, SPLIT_FILE, SPLIT_OUTPUT_FILE, ciName } =
-    parseSplitInputs(process.env, config.env)
+    parseSplitInputs(process.env, config.env, config.expose)
 
   if (SPLIT_FILE) {
     console.log('%s Timings are read from %s', label, SPLIT_FILE)
