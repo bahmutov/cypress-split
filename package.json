@@ -17,6 +17,7 @@
     "badges": "npx -p dependency-version-badge update-badge cypress",
     "semantic-release": "semantic-release",
     "demo": "DEBUG=cypress-split,find-cypress-specs SPLIT=2 SPLIT_INDEX=0 cypress run",
+    "demo:expose": "DEBUG=cypress-split,find-cypress-specs cypress run --expose split=2,splitIndex=0",
     "empty": "DEBUG=cypress-split SPLIT=10 SPLIT_INDEX=9 cypress run",
     "user-specs": "DEBUG=cypress-split,find-cypress-specs SPLIT=2 SPLIT_INDEX=0 cypress run --config-file examples/user-spec-pattern.config.js",
     "test-names": "find-cypress-specs --names",

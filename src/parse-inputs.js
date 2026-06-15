@@ -17,12 +17,15 @@ const { createShuffle } = require('fast-shuffle')
 /**
  * @returns {ParsedSplitInputs}
  */
-function parseSplitInputs(env = {}, configEnv = {}) {
-  let SPLIT = env.SPLIT || configEnv.split || configEnv.SPLIT
-  let SPLIT_INDEX = env.SPLIT_INDEX || configEnv.splitIndex
-  let SPLIT_FILE = env.SPLIT_FILE || configEnv.splitFile
+function parseSplitInputs(env = {}, configEnv = {}, expose = {}) {
+  let SPLIT = env.SPLIT || configEnv.split || configEnv.SPLIT || expose.split
+  let SPLIT_INDEX = env.SPLIT_INDEX || configEnv.splitIndex || expose.splitIndex
+  let SPLIT_FILE = env.SPLIT_FILE || configEnv.splitFile || expose.splitFile
   let SPLIT_OUTPUT_FILE =
-    env.SPLIT_OUTPUT_FILE || configEnv.splitOutputFile || SPLIT_FILE
+    env.SPLIT_OUTPUT_FILE ||
+    configEnv.splitOutputFile ||
+    expose.splitOutputFile ||
+    SPLIT_FILE
 
   // some CI systems like TeamCity provide agent index starting with 1
   // let's check for SPLIT_INDEX1 and if it is set,
@@ -30,9 +33,11 @@ function parseSplitInputs(env = {}, configEnv = {}) {
   debug('split index 1 possible values', {
     SPLIT_INDEX1: env.SPLIT_INDEX1,
     splitIndex1: configEnv.splitIndex1,
+    exposeSplitIndex1: expose.splitIndex1,
   })
-  if (env.SPLIT_INDEX1 || configEnv.splitIndex1) {
-    const indexOne = env.SPLIT_INDEX1 || configEnv.splitIndex1
+  if (env.SPLIT_INDEX1 || configEnv.splitIndex1 || expose.splitIndex1) {
+    const indexOne =
+      env.SPLIT_INDEX1 || configEnv.splitIndex1 || expose.splitIndex1
     SPLIT_INDEX = Number(indexOne) - 1
     debug(
       'set SPLIT_INDEX to %d from index starting with 1 "%s"',
@@ -79,14 +84,19 @@ function parseSplitInputs(env = {}, configEnv = {}) {
 }
 
 /**
- * Returns a list of spec filenames to split.
+ * Returns a list of spec filenames to split. Possible sources are environment variables,
+ * Cypress env variables, Cypress expose variables, or the default list of specs found by Cypress.
  * Each spec filename is absolute.
  * @returns {string[]} list of spec filenames
  */
 function getSpecsToSplit(env = {}, config) {
   // potential list of specs to skip
-  let SKIP_SPEC =
-    env.SKIP_SPEC || config?.env?.skipSpec || config?.env?.SKIP_SPEC
+  const SKIP_SPEC =
+    env.SKIP_SPEC ||
+    config?.env?.skipSpec ||
+    config?.env?.SKIP_SPEC ||
+    config?.expose?.skipSpec
+
   const skipSpecs = []
   if (typeof SKIP_SPEC === 'string' && SKIP_SPEC) {
     const possiblePatterns = SKIP_SPEC.split(',')
@@ -124,7 +134,8 @@ function getSpecsToSplit(env = {}, config) {
   let foundSpecs
 
   // potentially a list of files to run / split
-  let SPEC = env.SPEC || config?.env?.spec || config?.env?.SPEC
+  const SPEC =
+    env.SPEC || config?.env?.spec || config?.env?.SPEC || config?.expose?.spec
   if (typeof SPEC === 'string' && SPEC) {
     debug('using explicit list of specs "%s"', SPEC)
     const possiblePatterns = SPEC.split(',')
