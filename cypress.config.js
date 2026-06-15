@@ -3,6 +3,7 @@ const { defineConfig } = require('cypress')
 const cypressSplit = require('./src')
 
 module.exports = defineConfig({
+  allowCypressEnv: false,
   e2e: {
     // baseUrl, etc
     supportFile: false,
