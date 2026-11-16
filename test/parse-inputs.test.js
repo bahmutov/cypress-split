@@ -17,6 +17,27 @@ test('parseSplitInputs converts strings to numbers', (t) => {
   t.is(inputs.SPLIT_INDEX, 2)
 })
 
+test('parseSplitInputs keeps splitIndex 0 from the Cypress config env', (t) => {
+  // "--env split=4,splitIndex=0" is parsed by Cypress as numbers,
+  // so configEnv.splitIndex is the number 0, not a string
+  const inputs = parseSplitInputs({}, { split: 4, splitIndex: 0 })
+
+  t.is(inputs.SPLIT, 4)
+  t.is(inputs.SPLIT_INDEX, 0)
+})
+
+test('parseSplitInputs falls back when the env var is an empty string', (t) => {
+  // an unset shell env var can come through as "" rather than undefined,
+  // e.g. "SPLIT_INDEX= cypress run" - it should not win over the config value
+  const inputs = parseSplitInputs(
+    { SPLIT_INDEX: '' },
+    { split: 4, splitIndex: 2 },
+  )
+
+  t.is(inputs.SPLIT, 4)
+  t.is(inputs.SPLIT_INDEX, 2)
+})
+
 test('getSpecsToSplit spec pattern', (t) => {
   const specs = getSpecsToSplit({
     SPEC: 'cypress/spec-a.js,cypress/integration/spec-b.js',
