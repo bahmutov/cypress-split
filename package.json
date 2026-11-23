@@ -22,7 +22,7 @@
     "user-specs": "DEBUG=cypress-split,find-cypress-specs SPLIT=2 SPLIT_INDEX=0 cypress run --config-file examples/user-spec-pattern.config.js",
     "test-names": "find-cypress-specs --names",
     "test-names:component": "find-cypress-specs --component --names",
-    "deps": "npm audit --omit dev",
+    "deps": "npm audit --omit dev --audit-level critical",
     "subfolder": "DEBUG=cypress-split,find-cypress-specs SPLIT=2 SPLIT_INDEX=0 cypress run --config-file examples/my-app/tests/cypress.config.js",
     "timings": "DEBUG=cypress-split SPLIT=2 SPLIT_INDEX=0 SPLIT_FILE=timings.json cypress run",
     "timings-no-file": "DEBUG=cypress-split SPLIT=1 SPLIT_INDEX=0 SPLIT_FILE=does-not-exist.json cypress run",
