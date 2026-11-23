@@ -15,17 +15,32 @@ const { createShuffle } = require('fast-shuffle')
  */
 
 /**
+ * Returns the first value that is "set", skipping undefined, null,
+ * and the empty string (an unset env var can come through as ""),
+ * while still treating falsy values like 0 or false as set.
+ * @param {...*} values
+ */
+function firstSet(...values) {
+  return values.find((value) => value !== undefined && value !== null && value !== '')
+}
+
+/**
  * @returns {ParsedSplitInputs}
  */
 function parseSplitInputs(env = {}, configEnv = {}, expose = {}) {
-  let SPLIT = env.SPLIT || configEnv.split || configEnv.SPLIT || expose.split
-  let SPLIT_INDEX = env.SPLIT_INDEX || configEnv.splitIndex || expose.splitIndex
-  let SPLIT_FILE = env.SPLIT_FILE || configEnv.splitFile || expose.splitFile
-  let SPLIT_OUTPUT_FILE =
-    env.SPLIT_OUTPUT_FILE ||
-    configEnv.splitOutputFile ||
-    expose.splitOutputFile ||
-    SPLIT_FILE
+  let SPLIT = firstSet(env.SPLIT, configEnv.split, configEnv.SPLIT, expose.split)
+  let SPLIT_INDEX = firstSet(
+    env.SPLIT_INDEX,
+    configEnv.splitIndex,
+    expose.splitIndex,
+  )
+  let SPLIT_FILE = firstSet(env.SPLIT_FILE, configEnv.splitFile, expose.splitFile)
+  let SPLIT_OUTPUT_FILE = firstSet(
+    env.SPLIT_OUTPUT_FILE,
+    configEnv.splitOutputFile,
+    expose.splitOutputFile,
+    SPLIT_FILE,
+  )
 
   // some CI systems like TeamCity provide agent index starting with 1
   // let's check for SPLIT_INDEX1 and if it is set,
@@ -35,9 +50,12 @@ function parseSplitInputs(env = {}, configEnv = {}, expose = {}) {
     splitIndex1: configEnv.splitIndex1,
     exposeSplitIndex1: expose.splitIndex1,
   })
-  if (env.SPLIT_INDEX1 || configEnv.splitIndex1 || expose.splitIndex1) {
-    const indexOne =
-      env.SPLIT_INDEX1 || configEnv.splitIndex1 || expose.splitIndex1
+  const indexOne = firstSet(
+    env.SPLIT_INDEX1,
+    configEnv.splitIndex1,
+    expose.splitIndex1,
+  )
+  if (indexOne !== undefined) {
     SPLIT_INDEX = Number(indexOne) - 1
     debug(
       'set SPLIT_INDEX to %d from index starting with 1 "%s"',
