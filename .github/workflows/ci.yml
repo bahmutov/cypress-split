@@ -276,7 +276,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - name: Run an empty Cypress split 🧪
+      - name: Check production dependencies 🛠
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
         with:
