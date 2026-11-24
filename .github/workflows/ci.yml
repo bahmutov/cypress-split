@@ -502,7 +502,7 @@ jobs:
 
       - name: Semantic Release 🚀
         # https://github.com/cycjimmy/semantic-release-action
-        uses: cycjimmy/semantic-release-action@v6
+        uses: cycjimmy/semantic-release-action@v8.1.4
         with:
           branch: main
         env:
